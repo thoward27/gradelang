@@ -1,0 +1,93 @@
+\documentclass{article}
+\title{Gradelang: Autograding executable files done right}
+\author{Thomas Howard III and Brittany Lewis}
+
+\usepackage{listings}
+
+\begin{document}
+    \maketitle
+
+    \begin{abstract}
+        Gradelang is a new language designed to alleviate autograding, which can also be used to create general unit tests for scripts.
+    \end{abstract}
+    
+    \section{Language Overview}
+    The Gradelang language allows users to create arbitrarily complex testing conditions without being locked into creating Python TestCases.
+    When working with the Grade language, users create program structures bound directly to a student executable.
+    Once these structures are created, they can be executed, passed input, and have their outputs examined in great detail.
+    
+      
+    \newpage
+    \section{Language Example}
+    \begin{lstlisting}
+        require {
+            'echo' exists;
+            'echo' is executable;
+        }
+
+        setup {
+            prog = Program('echo');
+        }
+
+        teardown {
+            ...
+        }
+
+        output {
+            json('results');
+            markdown('results');
+        }
+
+        question 1 worth 10 points {
+            # Run the program, saving output.
+            output = prog('hello world');
+
+            # Now let's run some checks.
+            assert output exited successfully;
+            
+            # This checks both stdout and stderr
+            assert 'hello' in output;
+        }
+
+        question 2 worth 20 points {
+            output = prog('hello world');
+            assert 'goodbye' not in output;
+        }
+
+        question 3 worth 50 points {
+            let x be a string of length >= 1;
+            output = prog(x);
+
+            # If we want to just look at stdout.
+            assert output.stdout === x;
+        }
+    \end{lstlisting}
+
+    \section{Milestone Schedule}
+    \begin{enumerate}
+        \item {\bf Week 1:} Design full language specification
+        \item {\bf Week 2:} Write Lexer and Parser
+        \item {\bf Week 3:} Implement require
+        \item{\bf Week 3:}  Implement setup and teardown
+        \item {\bf Week 4:} Implement question with value
+        \item {\bf Week 4:} Implement execution of question blocks
+        \item {\bf Week 5:} Validate assert statement logic
+        \item {\bf Week 6:} Implement output
+        \item {\bf Week 6:} Test for bugs and submit final project
+    \end{enumerate}
+
+    \section{Requirements}
+    \begin{enumerate}
+        \item Grade Python Package for output functionality
+    \end{enumerate}
+    
+    \section {Team Members and Tasks:}
+    Team Member List:
+    
+    \begin{enumerate}
+        \item Thomas Howard III
+        \item Brittany Lewis
+    \end{enumerate}
+    
+    Both Tom and Brittany will work together on language design and the writing of the lexer. Once the Lexer is created, Tom will focus on the parsing of the program related commands and structures while Brittany focuses on the question related commands and structures. All of the implementation tasks for weeks 3-6 include two tasks per week of which Tom will take one, and Brittany will take the other. Pair programming will be utilized if either party runs into issues with implementing their portion so that the project can be completed successfully.
+\end{document}
