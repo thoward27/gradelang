@@ -21,14 +21,14 @@
     \section{Language Example}
     \begin{lstlisting}
         setup {
-            prog = Program('echo');
+            prog = Program 'echo';
         }
 
         teardown {
             ...
         }
 
-        output {
+        save {
             json('results');
             markdown('results');
         }
