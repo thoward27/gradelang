@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - run: mkdir ouput
+      - run: mkdir output
 
       - uses: maxheld83/pandoc@v2
         with:
