@@ -13,7 +13,7 @@ jobs:
 
       - uses: maxheld83/pandoc@v2
         with:
-          args: "docs/proposal.tex -f latex -t pdf -s -o output/proposal.pdf"
+          args: "docs/proposal.tex -s -o output/proposal.pdf"
       - uses: actions/upload-artifact@master
         with:
           name: output
