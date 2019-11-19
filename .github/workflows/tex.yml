@@ -1,0 +1,20 @@
+name: Build Latex
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - run: mkdir ouput
+
+      - uses: maxheld83/pandoc@v2
+        with:
+          args: "docs/proposal.tex --output=output/proposal.pdf"
+      - uses: actions/upload-artifact@master
+        with:
+          name: output
+          path: output
