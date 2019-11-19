@@ -11,7 +11,6 @@ def interpret(stream):
     state.initialize()
 
     # build the AST
-    breakpoint()
     parser.parse(stream, lexer=lexer)
 
     # walk the AST
