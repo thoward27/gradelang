@@ -12,10 +12,16 @@
     \end{abstract}
     
     \section{Language Overview}
-    The Gradelang language allows users to create arbitrarily complex testing conditions without being locked into creating Python TestCases.
-    When working with the Grade language, users create program structures bound directly to a student executable.
-    Once these structures are created, they can be executed, passed input, and have their outputs examined in great detail.
-    
+    The Grade Language (gradelang) allows users to create arbitrarily complex testing conditions without being locked into creating Python TestCases.
+    When working with gradelang, users create program structures bound directly to a student executable.
+    Once these structures are created, they can be executed, passed input, and have their outputs examined in great detail. By facilitating the testing of executables, we hope to allow teachers more flexibility in assignment design, with the bonus side effect of other developers being better equipped to test their own Command Line Interfaces (CLIs).
+
+    There are several components required to construct a gradelang file.
+    The setup block executes prior to each question, and can be used to control the initial conditions for a test.
+    Similarly to setup, teardown executes after each question, and can be used to cleanup auxiliary files.
+    The save block is executed last, controlling where the results are recorded, and in what format.
+    Once these blocks are present, the user can begin crafting questions, each with their own individual score.
+    During a question, users may award arbitrary chunks of points, examine the output of running students' code, and assert any arbitrary conditions have been met.
       
     \newpage
     \section{Language Example}
@@ -47,6 +53,8 @@
         question 2 worth 20 points {
             output = prog('hello world');
             assert 'goodbye' not in output;
+            award 10 points;
+            assert 'hello' in output.stdout;
         }
 
         question 3 worth 50 points {
