@@ -1,14 +1,14 @@
 """ gradelang Interpreter.
 """
 
+from . import lexer, parser
 from .state import state
 from .walk import walk
-from . import lexer, parser
 
 
 def interpret(stream):
-    # initialize the state object
-    state.initialize()
+    # reset the state object
+    state.reset()
 
     # build the AST
     parser.parse(stream, lexer=lexer)

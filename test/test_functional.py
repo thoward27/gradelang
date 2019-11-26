@@ -1,17 +1,25 @@
 from unittest import TestCase
 
 from gradelang import interpreter
+from .samples import *
 
 
 class TestFunctional(TestCase):
 
     def test_empty(self):
+        interpreter.interpret(Program.empty)
+        self.assertListEqual(interpreter.state.setup, [('nil',)])
+        return
+
+    def test_setup_failure(self):
+        """ Nothing should pass. """
         prog = """
-        setup {}
-        teardown {}
-        save {}
-        question worth 10 {}
-        question worth 10 {}
+        setup {
+            assert 0 > 1;
+        } 
+        question worth 10 {
+            assert 1 > 0;
+        }
         """
         interpreter.interpret(prog)
         return

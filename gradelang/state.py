@@ -3,17 +3,22 @@
 
 
 class State:
+    symbol_table: dict
+    setup: list
+    questions: list
+    teardown: list
+
+    AST: list
+
     def __init__(self):
-        self.symbol_table: dict
-        self.ast: list
-        self.initialize()
+        self.reset()
 
-    def initialize(self):
-        # symbol table to hold variable-value associations
-        self.symbol_table = {}
-
-        # when done parsing this variable will hold our AST
-        self.AST = None
+    def reset(self):
+        self.symbol_table = dict()
+        self.setup = list()
+        self.questions = list()
+        self.teardown = list()
+        self.AST = list()
 
 
 state = State()

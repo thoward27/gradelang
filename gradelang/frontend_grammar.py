@@ -3,14 +3,13 @@
 
 from .state import state
 
-
 #########################################################################
 # set precedence and associativity
 # NOTE: all operators need to have tokens
 #       so that we can put them into the precedence table
 precedence = (
     ('left', 'AND', 'OR'),
-    ('left', 'EQ', 'LE'),
+    ('left', 'EQ', 'LE', 'LT', 'GE', 'GT'),
     ('left', 'PLUS', 'MINUS'),
     ('left', 'TIMES', 'DIVIDE'),
     ('right', 'UMINUS', 'NOT')
@@ -60,15 +59,19 @@ def p_stmt(p):
          | ASSUME exp ';'
     """
     if p[1] == 'setup':
+        state.setup = p[3]
         p[0] = ('setup', p[3])
 
     elif p[1] == 'teardown':
+        state.teardown = p[3]
         p[0] = ('teardown', p[3])
 
     elif p[1] == 'save':
         p[0] = ('save', p[3])
 
     elif p[1] == 'question':
+        # TODO: This should be appending an identifier.
+        state.questions.append(p[5])
         p[0] = ('question', p[3], p[5])
 
     elif p[1] == 'assert':
@@ -97,6 +100,9 @@ def p_binop_exp(p):
         | exp DIVIDE exp
         | exp EQ exp
         | exp LE exp
+        | exp LT exp
+        | exp GE exp
+        | exp GT exp
         | exp AND exp
         | exp OR exp
     """

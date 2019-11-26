@@ -23,7 +23,7 @@ def p_grammar(_):
     stmt : SETUP '{' stmt_list '}'
          | TEARDOWN '{' stmt_list '}'
          | SAVE '{' stmt_list '}'
-         | QUESTION ID WORTH INTEGER '{' stmt_list '}'
+         | QUESTION WORTH INTEGER '{' stmt_list '}'
          | ASSERT exp ';'
          | TYPE ID '=' exp ';'
          | LET ID BE A type ';'
@@ -38,6 +38,9 @@ def p_grammar(_):
         | exp DIVIDE exp
         | exp EQ exp
         | exp LE exp
+        | exp LT exp
+        | exp GE exp
+        | exp GT exp
         | exp AND exp
         | exp OR exp
         | INTEGER
