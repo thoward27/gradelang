@@ -8,7 +8,7 @@ class TestFunctional(TestCase):
 
     def test_empty(self):
         interpreter.interpret(Program.empty)
-        self.assertListEqual(interpreter.state.setup, [('nil',)])
+        self.assertEqual(('nil',), interpreter.state.setup)
         return
 
     def test_setup_failure(self):
