@@ -30,23 +30,15 @@ class TestSetup(unittest.TestCase):
         return
 
     def test_teardown_empty(self):
-        interpret("""
-        teardown {}
-        """)
+        interpret(Teardown.empty)
         return
 
     def test_question_empty(self):
-        interpret("""
-        question 1 worth 10 {}
-        """)
+        interpret(Question.empty)
         return
 
     def test_question_trivial(self):
-        interpret("""
-        question 1 worth 1 {
-            assert 1 > 0;
-        }
-        """)
+        interpret(Question.trivial_passing)
         return
 
     def test_question_program_exit_successful(self):

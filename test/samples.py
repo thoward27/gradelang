@@ -41,7 +41,19 @@ class Save:
 class Program:
     """ Predefined Programs.
     """
-    empty = '\n'.join([Setup.empty, Question.empty, Teardown.empty, Save.empty])
+    empty = '\n'.join([
+        Setup.empty,
+        Question.empty,
+        Teardown.empty,
+        Save.empty
+    ])
+
+    setup_failure = '\n'.join([
+        Setup.trivial_failing,
+        Question.trivial_passing,
+        Teardown.empty,
+        Save.empty
+    ])
 
     proposal = """
         setup {
