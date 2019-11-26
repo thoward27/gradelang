@@ -29,6 +29,9 @@ dispatch = {
     # (SETUP, stmt_list)
     'setup': lambda ast: walk(ast[1]),
 
+    # (TEARDOWN, stmt_list)
+    'teardown': lambda ast: walk(ast[1]),
+
     # (ASSIGN, id, exp)
     'assign': lambda ast: state.symbol_table.update({ast[1]: walk(ast[2])}),
 

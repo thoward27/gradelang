@@ -19,9 +19,15 @@ class Test(unittest.TestCase):
         """)
         return
 
-    def test_teardown(self):
+    def test_teardown_empty(self):
         interpret("""
         teardown {}
+        """)
+        return
+
+    def test_question_empty(self):
+        interpret("""
+        question 1 worth 10 {}
         """)
         return
 

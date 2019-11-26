@@ -40,6 +40,14 @@ def p_stmt_list(p):
     return
 
 
+def p_type(p):
+    """
+    type : STRING_TYPE
+         | PROGRAM_TYPE
+    """
+    p[0] = p[1]
+
+
 def p_stmt(p):
     """
     stmt : SETUP '{' stmt_list '}'
@@ -47,8 +55,8 @@ def p_stmt(p):
          | SAVE '{' stmt_list '}'
          | QUESTION ID WORTH INTEGER '{' stmt_list '}'
          | ASSERT exp ';'
-         | TYPE ID '=' exp ';'
-         | LET ID BE A TYPE ';'
+         | type ID '=' exp ';'
+         | LET ID BE A type ';'
          | ASSUME exp ';'
     """
     if p[1] == 'setup':

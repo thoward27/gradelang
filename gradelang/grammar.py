@@ -20,10 +20,10 @@ def p_grammar(_):
     stmt_list : stmt stmt_list
               | empty
 
-    stmt : SETUP '{' stmt_list '}' ';'
-         | TEARDOWN '{' stmt_list '}' ';'
-         | SAVE '{' stmt_list '}' ';'
-         | QUESTION ID WORTH INTEGER '{' stmt_list '}' ';'
+    stmt : SETUP '{' stmt_list '}'
+         | TEARDOWN '{' stmt_list '}'
+         | SAVE '{' stmt_list '}'
+         | QUESTION ID WORTH INTEGER '{' stmt_list '}'
          | ASSERT exp ';'
          | TYPE ID '=' exp ';'
          | LET ID BE A type ';'
