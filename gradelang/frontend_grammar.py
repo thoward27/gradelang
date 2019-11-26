@@ -53,7 +53,7 @@ def p_stmt(p):
     stmt : SETUP '{' stmt_list '}'
          | TEARDOWN '{' stmt_list '}'
          | SAVE '{' stmt_list '}'
-         | QUESTION ID WORTH INTEGER '{' stmt_list '}'
+         | QUESTION WORTH INTEGER '{' stmt_list '}'
          | ASSERT exp ';'
          | type ID '=' exp ';'
          | LET ID BE A type ';'
@@ -69,7 +69,7 @@ def p_stmt(p):
         p[0] = ('save', p[3])
 
     elif p[1] == 'question':
-        p[0] = ('question', p[2], p[4], p[6])
+        p[0] = ('question', p[3], p[5])
 
     elif p[1] == 'assert':
         p[0] = ('assert', p[2])

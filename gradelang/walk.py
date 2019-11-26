@@ -6,17 +6,13 @@ from sys import exit
 from .state import state
 
 
-def _for(ast):
-    # (FOR, id, exp, exp, opt_step, stmt_list, id)
-    for x in range(int(walk(ast[2])), int(walk(ast[3])) + 1, int(walk(ast[4])) if ast[4] != ('nil',) else 1):
-        state.symbol_table.update({ast[1]: x})
-        walk(ast[5])
-
-
-def _while(ast):
-    # (WHILE, exp, stmt_list)
-    while walk(ast[1]):
+def _question(ast):
+    # (QUESTION, worth, stmt_list)
+    try:
         walk(ast[2])
+    except Exception as err:
+        print(err)
+    return
 
 
 dispatch = {
@@ -32,26 +28,14 @@ dispatch = {
     # (TEARDOWN, stmt_list)
     'teardown': lambda ast: walk(ast[1]),
 
+    # (SAVE, stmt_list)
+    'save': lambda ast: walk(ast[1]),
+
+    # (QUESTION, worth, stmt_list)
+    'question': _question,
+
     # (ASSIGN, id, exp)
     'assign': lambda ast: state.symbol_table.update({ast[1]: walk(ast[2])}),
-
-    # (INPUT, opt_string, id)
-    'input': lambda ast: state.symbol_table.update({ast[2]: int(input(ast[1]))}),
-
-    # (PRINT, value, value_list)
-    'print': lambda ast: print(walk(ast[1]), *(walk(n) for n in ast[2]) if ast[2] != ('nil',) else '', sep=''),
-
-    # (END, )
-    'end': lambda ast: exit(0),
-
-    # (WHILE, exp, stmt_list)
-    'while': _while,
-
-    # (FOR, id, exp, exp, opt_step, stmt_list, id)
-    'for': _for,
-
-    # (IF, exp, stmt_list, opt_else)
-    'if': lambda ast: walk(ast[2]) if walk(ast[1]) else walk(ast[3]),
 
     # (INT, value)
     'integer': lambda ast: int(ast[1]),

@@ -4,6 +4,18 @@ from gradelang import interpreter
 
 
 class TestFunctional(TestCase):
+
+    def test_empty(self):
+        prog = """
+        setup {}
+        teardown {}
+        save {}
+        question worth 10 {}
+        question worth 10 {}
+        """
+        interpreter.interpret(prog)
+        return
+
     def test_proposal(self):
         prog = """
         setup {
