@@ -2,28 +2,25 @@
 """
 
 reserved = {
-    'input': 'INPUT',
-    'print': 'PRINT',
-    'end': 'END',
-    'if': 'IF',
-    'then': 'THEN',
-    'else': 'ELSE',
-    'endif': 'ENDIF',
-    'while': 'WHILE',
-    'endwhile': 'ENDWHILE',
-    'for': 'FOR',
-    'to': 'TO',
-    'step': 'STEP',
-    'next': 'NEXT'
+    'setup': 'SETUP',
+    'teardown': 'TEARDOWN',
+    'save': 'SAVE',
+    'question': 'QUESTION',
+    'worth': 'WORTH',
+    'assert': 'ASSERT',
+    'let': 'LET',
+    'assume': 'ASSUME',
+    'be': 'BE',
+    'a': 'A',
 }
 
-literals = ['=', '(', ')', ',']
+literals = ['=', '(', ')', ',', '{', '}', ';']
 
 tokens = [
-             'PLUS', 'MINUS', 'TIMES', 'DIVIDE',
-             'EQ', 'LE', 'AND', 'OR', 'NOT',
-             'INTEGER', 'ID', 'STRING'
-         ] + list(reserved.values())
+     'PLUS', 'MINUS', 'TIMES', 'DIVIDE',
+     'EQ', 'LE', 'AND', 'OR', 'NOT',
+     'INTEGER', 'TYPE', 'ID', 'STRING',
+ ] + list(reserved.values())
 
 t_PLUS = r'\+'
 t_MINUS = r'-'
@@ -38,33 +35,38 @@ t_NOT = r'!'
 t_ignore = ' \t'
 
 
+def t_TYPE(t):
+    r'[String|Program]'
+    pass
+
+
 def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    r"""[a-zA-Z][a-zA-Z_0-9]*"""
     t.type = reserved.get(t.value, 'ID')  # Check for reserved words
     return t
 
 
 def t_INTEGER(t):
-    r'[0-9]+'
+    r"""[0-9]+"""
     return t
 
 
 def t_STRING(t):
-    r'\"[^\"]*\"'
+    r"""\"[^\"]*\""""
     t.value = t.value[1:-1]  # strip the quotes
     return t
 
 
 def t_COMMENT(t):
-    r'\'.*'
+    r"""\'.*"""
     pass
 
 
 def t_NEWLINE(t):
-    r'\n'
+    r"""\n"""
+    t.lexer.lineno += len(t.value)
     pass
 
 
 def t_error(t):
-    print("Illegal character %s" % t.value[0])
-    t.lexer.skip(1)
+    raise SyntaxError(f'Illegal character: {t}')

@@ -30,83 +30,55 @@ def p_prog(p):
 def p_stmt_list(p):
     """
     stmt_list : stmt stmt_list
-              | stmt
+              | empty
     """
-    if (len(p) == 3):
+    if len(p) == 3:
         p[0] = ('seq', p[1], p[2])
-    elif (len(p) == 2):
+
+    elif len(p) == 2:
         p[0] = p[1]
+    return
 
 
 def p_stmt(p):
     """
-    stmt : ID '=' exp
-         | INPUT opt_string ID
-         | PRINT value value_list
-         | END
-         | IF exp THEN stmt_list opt_else ENDIF
-         | WHILE exp stmt_list ENDWHILE
-         | FOR ID '=' exp TO exp opt_step stmt_list NEXT ID
+    stmt : SETUP '{' stmt_list '}'
+         | TEARDOWN '{' stmt_list '}'
+         | SAVE '{' stmt_list '}'
+         | QUESTION ID WORTH INTEGER '{' stmt_list '}'
+         | ASSERT exp ';'
+         | TYPE ID '=' exp ';'
+         | LET ID BE A TYPE ';'
+         | ASSUME exp ';'
     """
-    if p[1] == 'end':
-        p[0] = ('end',)
-    elif p[2] == '=':
-        p[0] = ('assign', p[1], p[3])
-        state.symbol_table[p[1]] = 0
-    elif p[1] == 'input':
-        p[0] = ('input', p[2], p[3])
+    if p[1] == 'setup':
+        p[0] = ('setup', p[3])
+
+    elif p[1] == 'teardown':
+        p[0] = ('teardown', p[3])
+
+    elif p[1] == 'save':
+        p[0] = ('save', p[3])
+
+    elif p[1] == 'question':
+        p[0] = ('question', p[2], p[4], p[6])
+
+    elif p[1] == 'assert':
+        p[0] = ('assert', p[2])
+
+    elif p[1] == 'type':
         state.symbol_table[p[2]] = 0
-    elif p[1] == 'print':
-        p[0] = ('print', p[2], p[3])
-    elif p[1] == 'if':
-        p[0] = ('if', p[2], p[4], p[5])
-    elif p[1] == 'while':
-        p[0] = ('while', p[2], p[3])
-    elif p[1] == 'for':
+        p[0] = ('assign', p[1], p[2], p[3])
+
+    elif p[1] == 'let':
         p[0] = ('for', p[2], p[4], p[6], p[7], p[8], p[10])
+
+    elif p[1] == 'assume':
+        p[0] = ('assume', p[2])
+
     else:
         raise ValueError("unexpected symbol {}".format(p[1]))
-
-
-def p_opt_string(p):
-    """
-    opt_string : STRING ','
-               | empty
-    """
-    p[0] = p[1]
-
-
-def p_value_list(p):
-    """
-    value_list : ',' value value_list
-               | empty
-    """
-    if len(p) == 4:
-        p[0] = (p[2], *p[3])
-    else:
-        p[0] = (p[1],)
-
-
-def p_opt_else(p):
-    """
-    opt_else : ELSE stmt_list
-             | empty
-    """
-    if p[1] == 'else':
-        p[0] = p[2]
-    else:
-        p[0] = p[1]
-
-
-def p_opt_step(p):
-    """
-    opt_step : STEP exp
-             | empty
-    """
-    if p[1] == 'step':
-        p[0] = p[2]
-    else:
-        p[0] = p[1]
+    return
 
 
 def p_binop_exp(p):
@@ -121,6 +93,7 @@ def p_binop_exp(p):
         | exp OR exp
     """
     p[0] = (p[2], p[1], p[3])
+    return
 
 
 def p_integer_exp(p):
@@ -128,6 +101,7 @@ def p_integer_exp(p):
     exp : INTEGER
     """
     p[0] = ('integer', int(p[1]))
+    return
 
 
 def p_id_exp(p):
@@ -135,6 +109,15 @@ def p_id_exp(p):
     exp : ID
     """
     p[0] = ('id', p[1])
+    return
+
+
+def p_string_exp(p):
+    """
+    exp : STRING
+    """
+    p[0] = ('string', p[1])
+    return
 
 
 def p_paren_exp(p):
@@ -142,6 +125,7 @@ def p_paren_exp(p):
     exp : '(' exp ')'
     """
     p[0] = ('paren', p[2])
+    return
 
 
 def p_uminus_exp(p):
@@ -156,27 +140,6 @@ def p_not_exp(p):
     exp : NOT exp
     """
     p[0] = ('!', p[2])
-
-
-def p_value_id(p):
-    """
-    value : ID
-    """
-    p[0] = ('id', p[1])
-
-
-def p_value_int(p):
-    """
-    value : INTEGER
-    """
-    p[0] = ('integer', p[1])
-
-
-def p_value_string(p):
-    """
-    value : STRING
-    """
-    p[0] = ('string', p[1])
 
 
 def p_empty(p):

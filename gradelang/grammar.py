@@ -18,27 +18,19 @@ def p_grammar(_):
     prog : stmt_list
     
     stmt_list : stmt stmt_list
-              | stmt
+              | empty
 
-    stmt : ID '=' exp
-         | INPUT opt_string ID
-         | PRINT value value_list
-         | END
-         | IF exp THEN stmt_list opt_else ENDIF
-         | WHILE exp stmt_list ENDWHILE
-         | FOR ID '=' exp TO exp opt_step stmt_list NEXT ID
-    
-    opt_string : STRING ','
-               | empty
-               
-    value_list : ',' value value_list
-               | empty
-               
-    opt_else : ELSE stmt_list
-             | empty
-             
-    opt_step : STEP exp
-             | empty
+    stmt : SETUP '{' stmt_list '}' ';'
+         | TEARDOWN '{' stmt_list '}' ';'
+         | SAVE '{' stmt_list '}' ';'
+         | QUESTION ID WORTH INTEGER '{' stmt_list '}' ';'
+         | ASSERT exp ';'
+         | TYPE ID '=' exp ';'
+         | LET ID BE A type ';'
+         | ASSUME exp ';'
+
+    type : STRING_TYPE
+         | PROGRAM_TYPE
 
     exp : exp PLUS exp
         | exp MINUS exp
@@ -50,19 +42,16 @@ def p_grammar(_):
         | exp OR exp
         | INTEGER
         | ID
+        | STRING
         | '(' exp ')'
         | MINUS exp %prec UMINUS
         | NOT exp
-
-    value : ID
-          | INTEGER
-          | STRING
     """
     pass
 
 
-def p_empty(p):
-    'empty :'
+def p_empty(_):
+    """empty :"""
     pass
 
 
