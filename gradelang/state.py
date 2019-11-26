@@ -4,9 +4,9 @@
 
 class State:
     symbol_table: dict
-    setup: list
+    setup: tuple
     questions: list
-    teardown: list
+    teardown: tuple
 
     AST: list
 
@@ -15,9 +15,9 @@ class State:
 
     def reset(self):
         self.symbol_table = dict()
-        self.setup = list()
+        self.setup = tuple()
         self.questions = list()
-        self.teardown = list()
+        self.teardown = tuple()
         self.AST = list()
 
 
