@@ -77,7 +77,7 @@ def p_stmt(p):
     elif p[1] == 'assert':
         p[0] = ('assert', p[2])
 
-    elif p[1] == 'type':
+    elif p[1] in {'Program', 'String'}:
         state.symbol_table[p[2]] = 0
         p[0] = ('assign', p[1], p[2], p[3])
 
