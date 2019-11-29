@@ -54,7 +54,7 @@ def t_ID(t):
 
 
 def t_STRING(t):
-    r"""\"[^"\\]*\""""
+    r"""\"[^"]*\""""
     t.value = t.value[1:-1]  # strip the quotes
     return t
 
