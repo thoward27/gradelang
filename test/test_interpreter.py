@@ -24,7 +24,7 @@ class TestSetup(unittest.TestCase):
     def test_setup_prog(self):
         interpret(Setup.echo)
         self.assertEqual(
-            ('',),
+            ('seq', ('assign', 'Program', 'prog', ('string', 'echo')), ('nil',)),
             state.setup
         )
         return

@@ -35,8 +35,8 @@ dispatch = {
     # (ASSERT, exp)
     'assert': lambda ast: walk(ast[1]),
 
-    # (ASSIGN, id, exp)
-    'assign': lambda ast: state.symbol_table.update({ast[1]: walk(ast[2])}),
+    # (ASSIGN, type, id, exp)
+    'assign': lambda ast: state.symbol_table.update({ast[2]: state.symbol_table[ast[2]](walk(ast[3]))}),
 
     # (INT, value)
     'integer': lambda ast: int(ast[1]),
@@ -74,9 +74,8 @@ dispatch = {
 }
 
 
-def walk(ast, level=None) -> str:
+def walk(ast) -> str:
     action = ast[0]
-
     if action in dispatch:
         return dispatch[action](ast)
     raise ValueError(f"Unknown node: {ast}")

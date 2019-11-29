@@ -1,6 +1,6 @@
 """ gradelang Frontend Grammar
 """
-
+from gradelang.Program import Program
 from .state import state
 
 #########################################################################
@@ -77,9 +77,9 @@ def p_stmt(p):
     elif p[1] == 'assert':
         p[0] = ('assert', p[2])
 
-    elif p[1] in {'Program', 'String'}:
-        state.symbol_table[p[2]] = 0
-        p[0] = ('assign', p[1], p[2], p[3])
+    elif p[1] in {Program.__name__, 'String'}:
+        state.symbol_table[p[2]] = eval(p[1])
+        p[0] = ('assign', p[1], p[2], p[4])
 
     elif p[1] == 'let':
         p[0] = ('for', p[2], p[4], p[6], p[7], p[8], p[10])
