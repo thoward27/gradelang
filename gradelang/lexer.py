@@ -1,6 +1,11 @@
 """ gradelang Lexer.
 """
 
+types = {
+    'String': 'STRING_TYPE',
+    'Program': 'PROGRAM_TYPE',
+}
+
 reserved = {
     'setup': 'SETUP',
     'teardown': 'TEARDOWN',
@@ -12,8 +17,7 @@ reserved = {
     'assume': 'ASSUME',
     'be': 'BE',
     'a': 'A',
-    'String': 'STRING_TYPE',
-    'Program': 'PROGRAM_TYPE',
+    **types,
 }
 
 literals = ['=', '>', '<', '(', ')', ',', '{', '}', ';']
