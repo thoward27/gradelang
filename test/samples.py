@@ -45,11 +45,10 @@ class Teardown:
 
 class Save:
     """ Save Snippets.
-
-    TODO: Save to JSON
-    TODO: Save to Markdown
     """
     empty = "save {}"
+    json = 'save { json "results"; }'
+    markdown = 'save { markdown "results"; }'
 
 
 class Program:

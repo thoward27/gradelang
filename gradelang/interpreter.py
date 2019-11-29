@@ -13,8 +13,12 @@ def interpret(stream):
     # build the AST
     parser.parse(stream, lexer=lexer)
 
-    # walk the AST
-    try:
-        walk(state.AST)
-    except SystemExit:
-        pass
+    for question in state.questions:
+        try:
+            walk(state.setup)
+            walk(question)
+            walk(state.teardown)
+        except Exception as err:
+            print(err)
+        finally:
+            walk(state.save)

@@ -7,8 +7,7 @@ class State:
     setup: tuple
     questions: list
     teardown: tuple
-
-    AST: list
+    save: tuple
 
     def __init__(self):
         self.reset()
@@ -18,7 +17,6 @@ class State:
         self.setup = tuple()
         self.questions = list()
         self.teardown = tuple()
-        self.AST = list()
 
 
 state = State()

@@ -60,19 +60,17 @@ def p_stmt(p):
     """
     if p[1] == 'setup':
         state.setup = p[3]
-        p[0] = ('setup', p[3])
 
     elif p[1] == 'teardown':
         state.teardown = p[3]
-        p[0] = ('teardown', p[3])
 
     elif p[1] == 'save':
-        p[0] = ('save', p[3])
+        state.save = p[3]
 
     elif p[1] == 'question':
         # TODO: This should be appending an identifier.
+        # TODO: Reintegrate points
         state.questions.append(p[5])
-        p[0] = ('question', p[3], p[5])
 
     elif p[1] == 'assert':
         p[0] = ('assert', p[2])
@@ -82,7 +80,7 @@ def p_stmt(p):
         p[0] = ('assign', p[1], p[2], p[4])
 
     elif p[1] == 'let':
-        p[0] = ('for', p[2], p[4], p[6], p[7], p[8], p[10])
+        p[0] = ('let', p[2], p[5])
 
     elif p[1] == 'assume':
         p[0] = ('assume', p[2])
