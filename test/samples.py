@@ -17,6 +17,20 @@ class Question:
     empty = "question worth 1 {}"
     trivial_passing = "question worth 1 { assert 1 == 1; }"
     trivial_failing = "question worth 1 { assert 0 == 1; }"
+    testing_output = """
+    question worth 1 {
+        Program prog = "echo";
+        output = prog "hello world";
+        assert output == "hello world";
+    }
+    """
+    testing_exit_success = """
+    question worth 1 {
+        Program prog = "echo";
+        prog "hello world";
+        assert prog existed successfully;
+    }
+    """
 
 
 class Teardown:

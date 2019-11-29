@@ -42,21 +42,9 @@ class TestSetup(unittest.TestCase):
         return
 
     def test_question_program_exit_successful(self):
-        interpret("""
-        question 1 worth 10 {
-            Program prog = "echo";
-            prog("Hello world");
-            assert prog exited successfully;
-        }
-        """)
+        interpret(Question.testing_exit_success)
         return
 
     def test_question_program_output(self):
-        interpret("""
-        question 1 worth 10 {
-            Program prog = "echo";
-            output = prog("Hello world");
-            assert output == "hello world";
-        }
-        """)
+        interpret(Question.testing_output)
         return
