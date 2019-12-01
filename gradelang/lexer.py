@@ -6,6 +6,11 @@ types = {
     'Program': 'PROGRAM_TYPE',
 }
 
+outputs = {
+    'json': 'JSON',
+    'markdown': 'MARKDOWN'
+}
+
 builtins = {
     'assert': 'ASSERT',
     'assume': 'ASSUME',
@@ -16,7 +21,7 @@ blocks = {
     'setup': 'SETUP',
     'question': 'QUESTION',
     'teardown': 'TEARDOWN',
-    'save': 'SAVE',
+    'output': 'OUTPUT',
 }
 
 stmts = {
@@ -30,6 +35,7 @@ reserved = {
     **builtins,
     **blocks,
     **stmts,
+    **outputs,
 }
 
 literals = ['=', '>', '<', '(', ')', ',', '{', '}', ';']

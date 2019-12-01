@@ -42,7 +42,8 @@ def p_block_list(p):
 
 def p_block(p):
     """
-    block : block_type '{' stmt_list '}'
+    block : block_generic '{' stmt_list '}'
+          | OUTPUT '{' format_list '}'
     """
     if p[1] == 'setup':
         state.setup = p[3]
@@ -53,7 +54,7 @@ def p_block(p):
     elif p[1] == 'teardown':
         state.teardown = p[3]
 
-    elif p[1] == 'save':
+    elif p[1] == 'output':
         state.save = p[3]
 
     else:
@@ -61,12 +62,32 @@ def p_block(p):
     return
 
 
-def p_block_type(p):
+def p_format_list(p):
     """
-    block_type : SETUP
-               | QUESTION
-               | TEARDOWN
-               | SAVE
+    format_list : output_format ';' format_list
+               | empty
+    """
+    if len(p) == 3:
+        p[0] = ('formats', p[1], p[3])
+    elif len(p) == 2:
+        p[0] = p[1]
+    return
+
+
+def p_output_format(p):
+    """
+    output_format : JSON
+                  | MARKDOWN
+    """
+    p[0] = p[1]
+    return
+
+
+def p_block_generic(p):
+    """
+    block_generic : SETUP
+                  | QUESTION
+                  | TEARDOWN
     """
     p[0] = p[1]
     return

@@ -7,7 +7,7 @@ class State:
     setup: tuple
     questions: list
     teardown: tuple
-    save: tuple
+    output: tuple
 
     def __init__(self):
         self.reset()

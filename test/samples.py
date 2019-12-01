@@ -43,12 +43,12 @@ class Teardown:
     trivial_failing = "teardown { assert 0 == 1; }"
 
 
-class Save:
-    """ Save Snippets.
+class Output:
+    """ Output Snippets.
     """
-    empty = "save {}"
-    json = 'save { json "results"; }'
-    markdown = 'save { markdown "results"; }'
+    empty = "output {}"
+    json = 'output { json; }'
+    markdown = 'output { markdown; }'
 
 
 class Program:
@@ -58,14 +58,14 @@ class Program:
         Setup.empty,
         Question.empty,
         Teardown.empty,
-        Save.empty
+        Output.empty
     ])
 
     setup_failure = '\n'.join([
         Setup.trivial_failing,
         Question.trivial_passing,
         Teardown.empty,
-        Save.empty
+        Output.empty
     ])
 
     proposal = """

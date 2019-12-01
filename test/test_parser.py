@@ -72,7 +72,7 @@ class TestQuestion(unittest.TestCase):
 
 class TestSave(unittest.TestCase):
     def test_empty(self):
-        parser.parse(Save.empty)
+        parser.parse(Output.empty)
         self.assertEqual(
             ('nil',),
             state.save

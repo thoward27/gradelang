@@ -15,9 +15,9 @@ class TestLexer(unittest.TestCase):
         self.assertEqual(lexer.token().type, 'TEARDOWN')
         return
 
-    def test_save(self):
-        lexer.input(Save.empty)
-        self.assertEqual(lexer.token().type, 'SAVE')
+    def test_output(self):
+        lexer.input(Output.empty)
+        self.assertEqual(lexer.token().type, 'OUTPUT')
         return
 
     def test_question(self):
