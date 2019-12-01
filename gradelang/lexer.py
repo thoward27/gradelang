@@ -6,50 +6,71 @@ types = {
     'Program': 'PROGRAM_TYPE',
 }
 
-reserved = {
+builtins = {
+    'assert': 'ASSERT',
+    'assume': 'ASSUME',
+    'print': 'PRINT',
+}
+
+blocks = {
     'setup': 'SETUP',
+    'question': 'QUESTION',
     'teardown': 'TEARDOWN',
     'save': 'SAVE',
-    'question': 'QUESTION',
-    'worth': 'WORTH',
-    'assert': 'ASSERT',
-    'let': 'LET',
-    'assume': 'ASSUME',
-    'be': 'BE',
-    'a': 'A',
+}
+
+stmts = {
+    'for': 'FOR',
+    'award': 'AWARD',
+    'in': 'IN',
+}
+
+reserved = {
     **types,
+    **builtins,
+    **blocks,
+    **stmts,
 }
 
 literals = ['=', '>', '<', '(', ')', ',', '{', '}', ';']
 
 tokens = [
+    # Mathematical
     'PLUS', 'MINUS', 'TIMES', 'DIVIDE',
+    # Equality
     'EQ', 'LE', 'GE', 'LT', 'GT',
+    # Logical
     'AND', 'OR', 'NOT',
-    'INTEGER', 'ID', 'STRING',
+    # Primitives
+    'STRING', 'INTEGER',
+    # Other
+    'ID',
     *list(reserved.values())
 ]
 
+# Mathematical
 t_PLUS = r'\+'
 t_MINUS = r'-'
 t_TIMES = r'\*'
 t_DIVIDE = r'/'
+# Equality
 t_EQ = r'=='
 t_LE = r'<='
 t_LT = r'<'
 t_GE = r'>='
 t_GT = r'>'
+# Logical
 t_AND = r'\&'
 t_OR = r'\|'
 t_NOT = r'!'
+# Primitive
 t_INTEGER = r'[0-9]+'
-
-t_ignore = ' \t'
 
 
 def t_ID(t):
     r"""[a-zA-Z_][a-zA-Z_0-9]*"""
-    t.type = reserved.get(t.value, 'ID')  # Check for reserved words
+    # Check for reserved words
+    t.type = reserved.get(t.value, 'ID')
     return t
 
 
@@ -57,11 +78,6 @@ def t_STRING(t):
     r"""\"[^"]*\""""
     t.value = t.value[1:-1]  # strip the quotes
     return t
-
-
-def t_COMMENT(_):
-    r"""\#.*"""
-    pass
 
 
 def t_NEWLINE(t):
@@ -72,3 +88,7 @@ def t_NEWLINE(t):
 
 def t_error(t):
     raise SyntaxError(f'Illegal character: {t}')
+
+
+t_ignore = ' \t'
+t_ignore_COMMENT = r'\#.*'

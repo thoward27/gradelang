@@ -1,6 +1,7 @@
 """ gradelang Frontend Grammar
+# TODO Pull lexer tokens in?
 """
-from gradelang.Program import Program
+from .lexer import *
 from .state import state
 
 #########################################################################
@@ -21,21 +22,91 @@ precedence = (
 #########################################################################
 def p_prog(p):
     """
-    prog : stmt_list
+    prog : block_list
     """
     state.AST = p[1]
 
 
-def p_stmt_list(p):
+def p_block_list(p):
     """
-    stmt_list : stmt stmt_list
-              | empty
+    block_list : block block_list
+               | empty
     """
     if len(p) == 3:
-        p[0] = ('seq', p[1], p[2])
+        p[0] = ('blocks', p[1], p[2])
+    elif len(p) == 2:
+        p[0] = p[1]
+    return
+
+
+def p_block(p):
+    """
+    block : block_type '{' stmt_list '}'
+    """
+    if p[1] == 'setup':
+        state.setup = p[3]
+
+    elif p[1] == 'question':
+        state.questions.append(p[3])
+
+    elif p[1] == 'teardown':
+        state.teardown = p[3]
+
+    elif p[1] == 'save':
+        state.save = p[3]
+
+    else:
+        raise ValueError(f'Unexpected block: {p[1]}')
+    return
+
+
+def p_block_type(p):
+    """
+    block_type : SETUP
+               | QUESTION
+               | TEARDOWN
+               | SAVE
+    """
+    p[0] = p[1]
+    return
+
+
+def p_stmt_list(p):
+    """
+    stmt_list : stmt ';' stmt_list
+              | empty
+    """
+    if len(p) == 4:
+        p[0] = ('seq', p[1], p[3])
 
     elif len(p) == 2:
         p[0] = p[1]
+    return
+
+
+def p_stmt(p):
+    """
+    stmt : FOR ID IN type
+         | type ID '=' exp
+         | builtin exp
+         | AWARD INTEGER
+    """
+    # TODO: Check strings before eval.
+    if p[1] == 'for':
+        p[0] = ('for', p[2], eval(p[4]))
+
+    elif p[1] == 'award':
+        p[0] = ('award', p[2])
+
+    elif p[1] in types.keys():
+        state.symbol_table[p[2]] = eval(p[1])
+        p[0] = ('assign', p[1], p[2], p[4])
+
+    elif p[1] in builtins.keys():
+        p[0] = (p[1], p[2])
+
+    else:
+        raise ValueError(f"Unexpected symbol {p[1]}")
     return
 
 
@@ -45,48 +116,16 @@ def p_type(p):
          | PROGRAM_TYPE
     """
     p[0] = p[1]
+    return
 
 
-def p_stmt(p):
+def p_builtin(p):
     """
-    stmt : SETUP '{' stmt_list '}'
-         | TEARDOWN '{' stmt_list '}'
-         | SAVE '{' stmt_list '}'
-         | QUESTION WORTH INTEGER '{' stmt_list '}'
-         | ASSERT exp ';'
-         | type ID '=' exp ';'
-         | LET ID BE A type ';'
-         | ASSUME exp ';'
+    builtin : ASSERT
+            | ASSUME
+            | PRINT
     """
-    if p[1] == 'setup':
-        state.setup = p[3]
-
-    elif p[1] == 'teardown':
-        state.teardown = p[3]
-
-    elif p[1] == 'save':
-        state.save = p[3]
-
-    elif p[1] == 'question':
-        # TODO: This should be appending an identifier.
-        # TODO: Reintegrate points
-        state.questions.append(p[5])
-
-    elif p[1] == 'assert':
-        p[0] = ('assert', p[2])
-
-    elif p[1] in {Program.__name__, 'String'}:
-        state.symbol_table[p[2]] = eval(p[1])
-        p[0] = ('assign', p[1], p[2], p[4])
-
-    elif p[1] == 'let':
-        p[0] = ('let', p[2], p[5])
-
-    elif p[1] == 'assume':
-        p[0] = ('assume', p[2])
-
-    else:
-        raise ValueError("unexpected symbol {}".format(p[1]))
+    p[0] = p[1]
     return
 
 

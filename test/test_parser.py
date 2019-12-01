@@ -2,7 +2,7 @@ import unittest
 
 from gradelang import parser
 from gradelang.state import state
-from .samples import *
+from test.samples import *
 
 
 class TestSetup(unittest.TestCase):
@@ -112,15 +112,15 @@ class TestStatements(unittest.TestCase):
         return
 
     def test_assignment(self):
-        parser.parse('Program p = "echo";')
+        parser.parse('setup { Program p = "echo"; }')
         return
 
     def test_comparisons(self):
-        parser.parse('assert 1 == 1;')
-        parser.parse('assert 1 >= 1;')
-        parser.parse('assert 1 >= 1;')
-        parser.parse('assert 0 <= 1;')
-        parser.parse('assert 0 < 1;')
-        parser.parse('assert 1 >= 0;')
-        parser.parse('assert 1 > 0;')
+        parser.parse('setup { assert 1 == 1;}')
+        parser.parse('setup { assert 1 >= 1; }')
+        parser.parse('setup { assert 1 >= 1; }')
+        parser.parse('setup { assert 0 <= 1; }')
+        parser.parse('setup { assert 0 < 1; }')
+        parser.parse('setup { assert 1 >= 0; }')
+        parser.parse('setup { assert 1 > 0; }')
         return

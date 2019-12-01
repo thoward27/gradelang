@@ -14,18 +14,18 @@ class Setup:
 class Question:
     """ Question Snippets.
     """
-    empty = "question worth 1 {}"
-    trivial_passing = "question worth 1 { assert 1 == 1; }"
-    trivial_failing = "question worth 1 { assert 0 == 1; }"
+    empty = "question {}"
+    trivial_passing = "question { assert 1 == 1; }"
+    trivial_failing = "question { assert 0 == 1; }"
     testing_output = """
-    question worth 1 {
+    question {
         Program prog = "echo";
         output = prog "hello world";
         assert output == "hello world";
     }
     """
     testing_exit_success = """
-    question worth 1 {
+    question {
         Program prog = "echo";
         prog "hello world";
         assert prog existed successfully;

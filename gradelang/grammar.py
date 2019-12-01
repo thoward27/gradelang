@@ -6,7 +6,7 @@ from ply import yacc
 # set precedence and associativity
 precedence = (
     ('left', 'AND', 'OR'),
-    ('left', 'EQ', 'LE'),
+    ('left', 'EQ', 'LE', 'LT', 'GT', 'GE'),
     ('left', 'PLUS', 'MINUS'),
     ('left', 'TIMES', 'DIVIDE'),
     ('right', 'UMINUS', 'NOT')
@@ -15,22 +15,34 @@ precedence = (
 
 def p_grammar(_):
     """
-    prog : stmt_list
-    
-    stmt_list : stmt stmt_list
+    prog : block_list
+
+    block_list : block block_list
+               | empty
+
+    block : block_type '{' stmt_list '}'
+
+    block_type : SETUP
+          | QUESTION name
+          | TEARDOWN
+          | SAVE
+
+    name : STRING | INTEGER
+
+    stmt_list : stmt ';' stmt_list
               | empty
 
-    stmt : SETUP '{' stmt_list '}'
-         | TEARDOWN '{' stmt_list '}'
-         | SAVE '{' stmt_list '}'
-         | QUESTION WORTH INTEGER '{' stmt_list '}'
-         | ASSERT exp ';'
-         | TYPE ID '=' exp ';'
-         | LET ID BE A type ';'
-         | ASSUME exp ';'
+    stmt : FOR ID IN type
+         | type ID '=' exp
+         | builtin exp
+         | AWARD INTEGER
 
     type : STRING_TYPE
          | PROGRAM_TYPE
+
+    builtin : ASSERT
+            | ASSUME
+            | PRINT
 
     exp : exp PLUS exp
         | exp MINUS exp
