@@ -101,6 +101,7 @@ class TestProgram(unittest.TestCase):
         )
         return
 
+    @unittest.skip  # TODO
     def test_proposal(self):
         parser.parse(Program.proposal)
         return

@@ -42,14 +42,16 @@ def p_block_list(p):
 
 def p_block(p):
     """
-    block : block_generic '{' stmt_list '}'
+    block : SETUP '{' stmt_list '}'
+          | QUESTION opt_name '{' stmt_list '}'
+          | TEARDOWN '{' stmt_list '}'
           | OUTPUT '{' format_list '}'
     """
     if p[1] == 'setup':
         state.setup = p[3]
 
     elif p[1] == 'question':
-        state.questions.append(p[3])
+        state.questions.append({p[2]: p[4]})
 
     elif p[1] == 'teardown':
         state.teardown = p[3]
@@ -59,6 +61,16 @@ def p_block(p):
 
     else:
         raise ValueError(f'Unexpected block: {p[1]}')
+    return
+
+
+def p_name(p):
+    """
+    opt_name : INTEGER
+         | STRING
+         | empty
+    """
+    p[0] = p[1]
     return
 
 
@@ -83,16 +95,6 @@ def p_output_format(p):
     return
 
 
-def p_block_generic(p):
-    """
-    block_generic : SETUP
-                  | QUESTION
-                  | TEARDOWN
-    """
-    p[0] = p[1]
-    return
-
-
 def p_stmt_list(p):
     """
     stmt_list : stmt ';' stmt_list
@@ -112,6 +114,7 @@ def p_stmt(p):
          | type ID '=' exp
          | builtin exp
          | AWARD INTEGER
+         | RUN STRING
     """
     # TODO: Check strings before eval.
     if p[1] == 'for':
@@ -126,6 +129,9 @@ def p_stmt(p):
 
     elif p[1] in builtins.keys():
         p[0] = (p[1], p[2])
+
+    elif p[1] == 'run':
+        p[0] = ('run', p[2])
 
     else:
         raise ValueError(f"Unexpected symbol {p[1]}")
@@ -166,6 +172,21 @@ def p_binop_exp(p):
         | exp OR exp
     """
     p[0] = (p[2], p[1], p[3])
+    return
+
+
+def p_bool_exp(p):
+    """
+    exp : EXIT SUCCESSFUL
+        | EXIT FAILURE
+        | STRING IN STDOUT
+        | STRING IN STDERR
+    """
+    # TODO: Should this be called exited?
+    if p[1] == 'exit':
+        p[0] = (p[2],)
+    elif p[2] == 'in':
+        p[0] = ('in', p[3])
     return
 
 

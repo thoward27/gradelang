@@ -21,4 +21,5 @@ def interpret(stream):
         except Exception as err:
             print(err)
         finally:
-            walk(state.save)
+            if state.output:
+                walk(state.output)

@@ -17,6 +17,7 @@ class State:
         self.setup = tuple()
         self.questions = list()
         self.teardown = tuple()
+        self.output = tuple()
 
 
 state = State()

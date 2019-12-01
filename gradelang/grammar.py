@@ -20,14 +20,17 @@ def p_grammar(_):
     block_list : block block_list
                | empty
 
-    block : block_type '{' stmt_list '}'
+    block : SETUP '{' stmt_list '}'
+          | QUESTION name '{' stmt_list '}'
+          | TEARDOWN '{' stmt_list '}'
+          | OUTPUT '{' format_list '}'
 
-    block_type : SETUP
-          | QUESTION name
-          | TEARDOWN
-          | SAVE
+    format_list : output_format ';' format_list
+                | empty
 
     name : STRING | INTEGER
+
+    output_format : JSON | MARKDOWN
 
     stmt_list : stmt ';' stmt_list
               | empty
@@ -36,6 +39,7 @@ def p_grammar(_):
          | type ID '=' exp
          | builtin exp
          | AWARD INTEGER
+         | RUN STRING
 
     type : STRING_TYPE
          | PROGRAM_TYPE
@@ -55,12 +59,17 @@ def p_grammar(_):
         | exp GT exp
         | exp AND exp
         | exp OR exp
+        | EXIT SUCCESSFUL
+        | EXIT FAILURE
+        | STRING IN STDOUT
+        | STRING IN STDERR
         | INTEGER
         | ID
         | STRING
         | '(' exp ')'
         | MINUS exp %prec UMINUS
         | NOT exp
+        | ID '(' argument_list ')'
     """
     pass
 

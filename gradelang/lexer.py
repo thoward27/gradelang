@@ -15,6 +15,12 @@ builtins = {
     'assert': 'ASSERT',
     'assume': 'ASSUME',
     'print': 'PRINT',
+    'exit': 'EXIT',
+    'stdout': 'STDOUT',
+    'stderr': 'STDERR',
+    'successful': 'SUCCESSFUL',
+    'failure': 'FAILURE',
+    'run': 'RUN',
 }
 
 blocks = {

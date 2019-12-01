@@ -19,16 +19,16 @@ class Question:
     trivial_failing = "question { assert 0 == 1; }"
     testing_output = """
     question {
-        Program prog = "echo";
-        output = prog "hello world";
-        assert output == "hello world";
+        run "echo hello world";
+        assert exit successful;
+        assert "hello world" in stdout;
     }
     """
     testing_exit_success = """
     question {
         Program prog = "echo";
-        prog "hello world";
-        assert prog existed successfully;
+        results = prog("hello world");
+        assert results exited successfully;
     }
     """
 
@@ -75,12 +75,12 @@ class Program:
 
         teardown {}
 
-        save {
-            json('results');
-            markdown('results');
+        output {
+            json 'results';
+            markdown 'results';
         }
 
-        question 1 worth 10 points {
+        question 1 {
             # Run the program, saving output.
             output = prog('hello world');
 
@@ -89,21 +89,25 @@ class Program:
 
             # This checks both stdout and stderr
             assert 'hello' in output;
+
+            award 10;
         }
 
-        question 2 worth 20 points {
+        question 2  {
             output = prog('hello world');
             assert 'goodbye' not in output;
-            award 10 points;
+            award 10;
             assert 'hello' in output.stdout;
+            award 10;
         }
 
-        question 3 worth 50 points {
+        question 3 {
             let x be a string;
             assume len(x) >= 1;
             output = prog(x);
 
             # If we want to just look at stdout.
             assert output.stdout === x;
+            award 50 total;
         }
         """
