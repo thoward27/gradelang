@@ -1,17 +1,9 @@
 """ gradelang Tree Walker.
 """
 
+from grade.pipeline import *
+
 from .state import state
-
-
-def _question(ast):
-    # (QUESTION, worth, stmt_list)
-    try:
-        walk(ast[2])
-    except Exception as err:
-        print(err)
-    return
-
 
 dispatch = {
     # (SEQ, stmt, stmt_list)
@@ -20,29 +12,28 @@ dispatch = {
     # (NIL, )
     'nil': lambda ast: '',
 
-    # (SETUP, stmt_list)
-    'setup': lambda ast: walk(ast[1]),
-
-    # (TEARDOWN, stmt_list)
-    'teardown': lambda ast: walk(ast[1]),
-
-    # (SAVE, stmt_list)
-    'save': lambda ast: walk(ast[1]),
-
-    # (QUESTION, worth, stmt_list)
-    'question': _question,
-
     # (ASSERT, exp)
     'assert': lambda ast: walk(ast[1]),
+
+    # (RUN, STRING)
+    'run': lambda ast: state.update_results(Run(ast[1], shell=True)()),
+
+    # (EXIT, code)
+    'exit': lambda ast: (AssertExitSuccess() if ast[1] == 'successful' else AssertExitFailure())(state.results),
+
+    # (IN, string, stream)
+    'in': lambda ast: (AssertStdoutMatches if ast[2] == 'stdout' else AssertStderrMatches)(stdout=ast[1])(state.results),
 
     # (ASSIGN, type, id, exp)
     'assign': lambda ast: state.symbol_table.update({ast[2]: state.symbol_table[ast[2]](walk(ast[3]))}),
 
     # (INT, value)
     'integer': lambda ast: int(ast[1]),
+
+    # (STRING, value)
     'string': lambda ast: ast[1],
 
-    # (ID, )
+    # (ID, value)
     'id': lambda ast: state.symbol_table[ast[1]],
 
     # (UMINUS, exp)
@@ -71,6 +62,15 @@ dispatch = {
 
     # (LEQ, exp, exp)
     '<=': lambda ast: int(walk(ast[1])) <= int(walk(ast[2])),
+
+    # (LT, exp exp)
+    '<': lambda ast: int(walk(ast[1])) <= int(walk(ast[2])),
+
+    # (GEQ, exp, exp)
+    '>=': lambda ast: int(walk(ast[1])) <= int(walk(ast[2])),
+
+    # (GT, exp, exp)
+    '>': lambda ast: int(walk(ast[1])) > int(walk(ast[2])),
 }
 
 

@@ -51,7 +51,10 @@ def p_block(p):
         state.setup = p[3]
 
     elif p[1] == 'question':
-        state.questions.append({p[2]: p[4]})
+        state.add_question(
+            name=p[2],
+            body=p[4]
+        )
 
     elif p[1] == 'teardown':
         state.teardown = p[3]
@@ -116,9 +119,8 @@ def p_stmt(p):
          | AWARD INTEGER
          | RUN STRING
     """
-    # TODO: Check strings before eval.
     if p[1] == 'for':
-        p[0] = ('for', p[2], eval(p[4]))
+        p[0] = ('for', p[2], TYPE_DICT[p[4]])
 
     elif p[1] == 'award':
         p[0] = ('award', p[2])
@@ -184,9 +186,9 @@ def p_bool_exp(p):
     """
     # TODO: Should this be called exited?
     if p[1] == 'exit':
-        p[0] = (p[2],)
+        p[0] = ('exit', p[2])
     elif p[2] == 'in':
-        p[0] = ('in', p[3])
+        p[0] = ('in', p[1], p[3])
     return
 
 

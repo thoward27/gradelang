@@ -15,11 +15,16 @@ def interpret(stream):
 
     for question in state.questions:
         try:
-            walk(state.setup)
-            walk(question)
-            walk(state.teardown)
+            if state.setup:
+                walk(state.setup)
+
+            walk(question.body)
+
+            if state.teardown:
+                walk(state.teardown)
         except Exception as err:
-            print(err)
+            raise
+            print("Exception Raised!" + err)
         finally:
             if state.output:
                 walk(state.output)

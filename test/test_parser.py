@@ -1,8 +1,9 @@
 import unittest
 
 from gradelang import parser
+from gradelang.question import Question
 from gradelang.state import state
-from test.samples import *
+from test import samples
 
 
 class TestSetup(unittest.TestCase):
@@ -11,12 +12,12 @@ class TestSetup(unittest.TestCase):
         return
 
     def test_empty(self):
-        parser.parse(Setup.empty)
+        parser.parse(samples.Setup.empty)
         self.assertEqual(('nil',), state.setup)
         return
 
     def test_trivial_failing(self):
-        parser.parse(Setup.trivial_failing)
+        parser.parse(samples.Setup.trivial_failing)
         self.assertEqual(
             ('seq', ('assert', ('==', ('integer', 1), ('integer', 0))), ('nil',)),
             state.setup
@@ -24,7 +25,7 @@ class TestSetup(unittest.TestCase):
         return
 
     def test_trivial_passing(self):
-        parser.parse(Setup.trivial_passing)
+        parser.parse(samples.Setup.trivial_passing)
         self.assertEqual(
             ('seq', ('assert', ('==', ('integer', 1), ('integer', 1))), ('nil',)),
             state.setup
@@ -32,7 +33,7 @@ class TestSetup(unittest.TestCase):
         return
 
     def test_echo(self):
-        parser.parse(Setup.echo)
+        parser.parse(samples.Setup.echo)
         self.assertEqual(
             ('seq', ('assign', 'Program', 'prog', ('string', 'echo')), ('nil',)),
             state.setup
@@ -46,33 +47,33 @@ class TestQuestion(unittest.TestCase):
         return
 
     def test_empty(self):
-        parser.parse(Question.empty)
+        parser.parse(samples.Question.empty)
         self.assertListEqual(
-            [('nil',)],
-            state.questions,
+            [Question(name=0, body=('nil',))],
+            list(state.questions),
         )
         return
 
     def test_trivial_passing(self):
-        parser.parse(Question.trivial_passing)
+        parser.parse(samples.Question.trivial_passing)
         self.assertListEqual(
-            [('seq', ('assert', ('==', ('integer', 1), ('integer', 1))), ('nil',))],
-            state.questions,
+            [Question(name=0, body=('seq', ('assert', ('==', ('integer', 1), ('integer', 1))), ('nil',)))],
+            list(state.questions),
         )
         return
 
     def test_trivial_failing(self):
-        parser.parse(Question.trivial_failing)
+        parser.parse(samples.Question.trivial_failing)
         self.assertListEqual(
-            [('seq', ('assert', ('==', ('integer', 0), ('integer', 1))), ('nil',))],
-            state.questions,
+            [Question(name=0, body=('seq', ('assert', ('==', ('integer', 0), ('integer', 1))), ('nil',)))],
+            list(state.questions),
         )
         return
 
 
 class TestSave(unittest.TestCase):
     def test_empty(self):
-        parser.parse(Output.empty)
+        parser.parse(samples.Output.empty)
         self.assertEqual(
             ('nil',),
             state.save
@@ -82,14 +83,14 @@ class TestSave(unittest.TestCase):
 
 class TestProgram(unittest.TestCase):
     def test_empty(self):
-        parser.parse(Program.empty)
+        parser.parse(samples.Program.empty)
         self.assertEqual(
             ('nil',),
             state.setup
         )
         self.assertListEqual(
-            [('nil',)],
-            state.questions
+            [Question(name=0, body=('nil',))],
+            list(state.questions)
         )
         self.assertEqual(
             ('nil',),
@@ -103,7 +104,7 @@ class TestProgram(unittest.TestCase):
 
     @unittest.skip  # TODO
     def test_proposal(self):
-        parser.parse(Program.proposal)
+        parser.parse(samples.Program.proposal)
         return
 
 

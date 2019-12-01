@@ -20,17 +20,17 @@ class Question:
     testing_output = """
     question {
         run "echo hello world";
-        assert exit successful;
         assert "hello world" in stdout;
     }
     """
     testing_exit_success = """
     question {
-        Program prog = "echo";
-        results = prog("hello world");
-        assert results exited successfully;
+        run "echo hello world";
+        assert exit successful;
     }
     """
+    name_string = 'question "named" {}'
+    name_int = 'question 1 {}'
 
 
 class Teardown:
