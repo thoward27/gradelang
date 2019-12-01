@@ -3,6 +3,7 @@
 """
 from .lexer import *
 from .state import state
+from .types import DICT as TYPE_DICT
 
 #########################################################################
 # set precedence and associativity
@@ -99,7 +100,7 @@ def p_stmt(p):
         p[0] = ('award', p[2])
 
     elif p[1] in types.keys():
-        state.symbol_table[p[2]] = eval(p[1])
+        state.symbol_table[p[2]] = TYPE_DICT[p[1]]
         p[0] = ('assign', p[1], p[2], p[4])
 
     elif p[1] in builtins.keys():
