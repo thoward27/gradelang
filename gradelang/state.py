@@ -13,6 +13,7 @@ class State:
     teardown: tuple
     output: tuple
     results: Results
+    award: int
 
     def __init__(self):
         self.reset()
@@ -23,6 +24,7 @@ class State:
         self._questions = list()
         self.teardown = tuple()
         self.output = tuple()
+        self.award = 0
         return
 
     @property
@@ -39,6 +41,8 @@ class State:
             )
         )
         return
+    def updateAward(self, value):
+        self.award += value
 
     def update_results(self, results):
         self.results = results

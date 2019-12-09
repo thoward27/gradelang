@@ -4,6 +4,8 @@
 types = {
     'String': 'STRING_TYPE',
     'Program': 'PROGRAM_TYPE',
+    'string' : 'string',
+    'int' : 'int',
 }
 
 outputs = {

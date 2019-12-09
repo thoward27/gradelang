@@ -51,6 +51,7 @@ def p_block(p):
         state.setup = p[3]
 
     elif p[1] == 'question':
+        #print("Question parsed:", p[2])
         state.add_question(
             name=p[2],
             body=p[4]
@@ -115,6 +116,8 @@ def p_stmt(p):
     """
     stmt : FOR ID IN type
          | type ID '=' exp
+         | string ID '=' STRING
+         | int ID '=' INTEGER
          | builtin exp
          | AWARD INTEGER
          | RUN STRING
@@ -125,15 +128,26 @@ def p_stmt(p):
     elif p[1] == 'award':
         p[0] = ('award', p[2])
 
-    elif p[1] in types.keys():
-        state.symbol_table[p[2]] = TYPE_DICT[p[1]]
-        p[0] = ('assign', p[1], p[2], p[4])
+    #elif p[1] in types.keys():
+    #    #print(TYPE_DICT)
+    #    dict = TYPE_DICT[p[1]]
+    #    state.symbol_table[p[2]] = dict
+    #    p[0] = ('assign', p[1], p[2], p[4])
+    
 
     elif p[1] in builtins.keys():
         p[0] = (p[1], p[2])
 
     elif p[1] == 'run':
         p[0] = ('run', p[2])
+        
+    elif p[3] == '=':
+        if p[1] == 'string' or p[1] == 'int':
+            p[0] = ('assign', p[1], p[2], p[4])
+        elif p[1] in types.keys():
+            dict = TYPE_DICT[p[1]]
+            state.symbol_table[p[2]] = dict
+            p[0] = ('assign', p[1], p[2], p[4])
 
     else:
         raise ValueError(f"Unexpected symbol {p[1]}")
@@ -181,8 +195,8 @@ def p_bool_exp(p):
     """
     exp : EXIT SUCCESSFUL
         | EXIT FAILURE
-        | STRING IN STDOUT
-        | STRING IN STDERR
+        | exp IN STDOUT
+        | exp IN STDERR
     """
     # TODO: Should this be called exited?
     if p[1] == 'exit':

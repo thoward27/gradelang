@@ -3,8 +3,29 @@
 
 from grade.pipeline import *
 
+from .types import Program
+
 from .state import state
 
+def outputFile(ast):
+    WriteOutput()
+    
+def assign(ast):
+    dict = {}
+    if ast[1] == 'string':
+        dict = {ast[2]: str(ast[2])}
+    elif ast[1] == 'int':
+        dict = {ast[2]: int(ast[2])}
+    elif isinstance(state.symbol_table[ast[2]], Program):
+        
+        dict = {ast[2]: Program(walk(ast[3]))}
+    else:
+        dict = {ast[2]: state.symbol_table[ast[2]](walk(ast[3]))}
+        
+    state.symbol_table.update(dict)
+        
+    
+    
 dispatch = {
     # (SEQ, stmt, stmt_list)
     'seq': lambda ast: (walk(ast[1]), walk(ast[2])),
@@ -21,11 +42,12 @@ dispatch = {
     # (EXIT, code)
     'exit': lambda ast: (AssertExitSuccess() if ast[1] == 'successful' else AssertExitFailure())(state.results),
 
-    # (IN, string, stream)
-    'in': lambda ast: (AssertStdoutMatches if ast[2] == 'stdout' else AssertStderrMatches)(stdout=ast[1])(state.results),
+    # (IN, exp, stream)
+    'in': lambda ast: (AssertRegexStdout if ast[2] == 'stdout' else AssertRegexStderr)(pattern=walk(ast[1]))(state.results),
 
     # (ASSIGN, type, id, exp)
-    'assign': lambda ast: state.symbol_table.update({ast[2]: state.symbol_table[ast[2]](walk(ast[3]))}),
+    #'assign': lambda ast: state.symbol_table.update({ast[2]: state.symbol_table[ast[2]](walk(ast[3]))}),
+    'assign': assign,
 
     # (INT, value)
     'integer': lambda ast: int(ast[1]),
@@ -71,6 +93,15 @@ dispatch = {
 
     # (GT, exp, exp)
     '>': lambda ast: int(walk(ast[1])) > int(walk(ast[2])),
+    
+    #('award', INTEGER)
+    'award': lambda ast: state.updateAward(int(ast[1])),
+    
+    'json': outputFile,
+    
+    'markdown': outputFile,
+    
+    
 }
 
 
@@ -79,3 +110,5 @@ def walk(ast) -> str:
     if action in dispatch:
         return dispatch[action](ast)
     raise ValueError(f"Unknown node: {ast}")
+    
+
