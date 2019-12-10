@@ -8,7 +8,7 @@ from test import samples
 
 class TestSetup(unittest.TestCase):
     def setUp(self) -> None:
-        state.reset()
+        state.clean()
         return
 
     def test_empty(self):
@@ -43,7 +43,7 @@ class TestSetup(unittest.TestCase):
 
 class TestQuestion(unittest.TestCase):
     def setUp(self) -> None:
-        state.reset()
+        state.clean()
         return
 
     def test_empty(self):
@@ -75,8 +75,8 @@ class TestSave(unittest.TestCase):
     def test_empty(self):
         parser.parse(samples.Output.empty)
         self.assertEqual(
-            ('nil',),
-            state.save
+            [],
+            state.output
         )
         return
 
@@ -97,8 +97,8 @@ class TestProgram(unittest.TestCase):
             state.teardown
         )
         self.assertEqual(
-            ('nil',),
-            state.save
+            [],
+            state.output
         )
         return
 

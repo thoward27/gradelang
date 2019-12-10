@@ -4,6 +4,7 @@ from typing import List
 
 from gradelang.question import Question
 from gradelang.results import Results
+from grade.pipeline import WriteOutputs
 
 
 class State:
@@ -11,21 +12,30 @@ class State:
     setup: tuple
     _questions: List[Question]
     teardown: tuple
-    output: tuple
+    output: []
     results: Results
     award: int
 
     def __init__(self):
-        self.reset()
+        self.clean()
+        
 
     def reset(self):
+        self.symbol_table = dict()
+        #self.setup = tuple()
+        #self._questions = list()
+        #self.teardown = tuple()
+        #self.output = tuple()
+        #self.award = 0
+        return
+        
+    def clean(self):
         self.symbol_table = dict()
         self.setup = tuple()
         self._questions = list()
         self.teardown = tuple()
-        self.output = tuple()
+        self.output = []
         self.award = 0
-        return
 
     @property
     def questions(self):
@@ -46,6 +56,21 @@ class State:
 
     def update_results(self, results):
         self.results = results
+        if self.output:
+            self.writeOutput()
+        
+    def writeOutput(self):
+        import json
+        if 'json' in self.output:
+            with open("output.json", 'a') as f:
+                jsonOutput = json.dumps(self.results.stdout)
+                f.write(jsonOutput)
+        if 'markdown' in self.output:
+            with open("output.md", 'a') as f:
+                f.write(self.results.stdout)
+            
+            
+        
 
 
 state = State()

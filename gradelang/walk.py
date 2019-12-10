@@ -6,9 +6,6 @@ from grade.pipeline import *
 from .types import Program
 
 from .state import state
-
-def outputFile(ast):
-    WriteOutput()
     
 def assign(ast):
     dict = {}
@@ -16,7 +13,7 @@ def assign(ast):
         dict = {ast[2]: str(ast[2])}
     elif ast[1] == 'int':
         dict = {ast[2]: int(ast[2])}
-    elif isinstance(state.symbol_table[ast[2]], Program):
+    elif ast[1] == "Program":
         
         dict = {ast[2]: Program(walk(ast[3]))}
     else:
@@ -95,13 +92,7 @@ dispatch = {
     '>': lambda ast: int(walk(ast[1])) > int(walk(ast[2])),
     
     #('award', INTEGER)
-    'award': lambda ast: state.updateAward(int(ast[1])),
-    
-    'json': outputFile,
-    
-    'markdown': outputFile,
-    
-    
+    'award': lambda ast: state.updateAward(int(ast[1])),    
 }
 
 

@@ -26,5 +26,5 @@ def interpret(stream):
             raise
             print("Exception Raised!" + err)
         finally:
-            if state.output:
-                walk(state.output)
+            pass
+            #state.writeOutput(question)

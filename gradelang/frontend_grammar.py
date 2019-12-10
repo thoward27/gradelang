@@ -61,7 +61,8 @@ def p_block(p):
         state.teardown = p[3]
 
     elif p[1] == 'output':
-        state.save = p[3]
+        #print(state.output)
+        pass
 
     else:
         raise ValueError(f'Unexpected block: {p[1]}')
@@ -83,10 +84,8 @@ def p_format_list(p):
     format_list : output_format ';' format_list
                | empty
     """
-    if len(p) == 3:
-        p[0] = ('formats', p[1], p[3])
-    elif len(p) == 2:
-        p[0] = p[1]
+    if len(p) >= 3:
+        state.output.append(p[1])
     return
 
 
