@@ -82,6 +82,10 @@ class TestSave(unittest.TestCase):
 
 
 class TestProgram(unittest.TestCase):
+    def setUp(self) -> None:
+        state.clean()
+        return
+
     def test_empty(self):
         parser.parse(samples.Program.empty)
         self.assertEqual(

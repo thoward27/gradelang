@@ -8,11 +8,15 @@ class Setup:
     empty = "setup {}"
     trivial_passing = "setup { assert 1 == 1; }"
     trivial_failing = "setup { assert 1 == 0; }"
-    echo = 'setup { Program prog = "echo"; }'
+    required_files = 'setup { assert "./lib.c" exists }'
+    # TODO: This should be moved to a global setup.
+    compilation = 'setup { run "./compile -link um" }'
+    create_files = 'setup { touch "./lib.c"; }'
 
 
 class Question:
     """ Question Snippets.
+    # TODO: Reintegrate assume.
     """
     empty = "question {}"
     trivial_passing = "question { assert 1 == 1; }"
@@ -31,6 +35,14 @@ class Question:
     """
     name_string = 'question "named" {}'
     name_int = 'question 1 {}'
+    string_generation = """
+    question {
+        let x be String(minlen=10, maxlen=100);
+        run "echo", x;
+        assert x in stdout;
+        award 10;
+    }
+    """
 
 
 class Teardown:
@@ -41,11 +53,14 @@ class Teardown:
     empty = "teardown {}"
     trivial_passing = "teardown { assert 1 == 1; }"
     trivial_failing = "teardown { assert 0 == 1; }"
+    file_cleanup = 'teardown { remove "./lib.c"; }'
 
 
 class Output:
     """ Output Snippets.
     """
+    # TODO: Tom's Job
+    # TODO: Default output mode.
     empty = "output {}"
     json = 'output { json; }'
     markdown = 'output { markdown; }'
@@ -70,44 +85,47 @@ class Program:
 
     proposal = """
         setup {
-            Program prog = "echo";
+            touch "temp.txt";
+            run "echo";
+            assert exit successful;
         }
 
-        teardown {}
+        teardown {
+            remove "temp.txt";
+        }
 
         output {
-            json 'results';
-            markdown 'results';
+            json;
         }
 
         question 1 {
             # Run the program, saving output.
-            output = prog('hello world');
+            run "echo", "hello world";
 
             # Now let's run some checks.
-            assert output exited successfully;
+            assert exit successful;
 
             # This checks both stdout and stderr
-            assert 'hello' in output;
+            assert 'hello' in stdout;
 
             award 10;
         }
 
         question 2  {
-            output = prog('hello world');
-            assert 'goodbye' not in output;
+            run "echo", "hello world";
+            assert "goodbye" not in stdout;
             award 10;
-            assert 'hello' in output.stdout;
+            assert "hello" in stdout;
+            assert "hello" not in stderr;
             award 10;
         }
 
         question 3 {
-            let x be a string;
-            assume len(x) >= 1;
-            output = prog(x);
+            let x be String(minlength=1);
+            run "echo", x;
 
             # If we want to just look at stdout.
-            assert output.stdout === x;
-            award 50 total;
+            assert stdout == x;
+            award 50;
         }
         """

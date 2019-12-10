@@ -21,11 +21,11 @@ precedence = (
 #########################################################################
 # grammar rules with embedded actions
 #########################################################################
-def p_prog(p):
+def p_prog(_):
     """
     prog : block_list
     """
-    state.AST = p[1]
+    return
 
 
 def p_block_list(p):

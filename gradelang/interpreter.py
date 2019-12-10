@@ -24,7 +24,6 @@ def interpret(stream):
                 walk(state.teardown)
         except Exception as err:
             raise
-            print("Exception Raised!" + err)
         finally:
-            pass
-            #state.writeOutput(question)
+            # TODO: Migrate results away from global state.
+            state.results = None

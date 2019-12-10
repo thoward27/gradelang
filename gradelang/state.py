@@ -4,7 +4,6 @@ from typing import List
 
 from gradelang.question import Question
 from gradelang.results import Results
-from grade.pipeline import WriteOutputs
 
 
 class State:
@@ -18,7 +17,6 @@ class State:
 
     def __init__(self):
         self.clean()
-        
 
     def reset(self):
         self.symbol_table = dict()
