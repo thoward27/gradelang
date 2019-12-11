@@ -8,10 +8,10 @@ class Setup:
     empty = "setup {}"
     trivial_passing = "setup { assert 1 == 1; }"
     trivial_failing = "setup { assert 1 == 0; }"
-    required_files = 'setup { assert "./lib.c" exists }'
+    required_files = 'setup { assert "./README.md" exists }'
     # TODO: This should be moved to a global setup.
-    compilation = 'setup { run "./compile -link um" }'
-    create_files = 'setup { touch "./lib.c"; }'
+    run = 'setup { run "echo", "Hello world"; }'
+    touch = 'setup { touch "./temp.txt"; }'
 
 
 class Question:
@@ -25,6 +25,12 @@ class Question:
     question {
         run "echo hello world";
         assert "hello world" in stdout;
+    }
+    """
+    awarding_points = """
+    question { 
+        assert 1 == 1;
+        award 10;
     }
     """
     testing_exit_success = """
@@ -53,7 +59,7 @@ class Teardown:
     empty = "teardown {}"
     trivial_passing = "teardown { assert 1 == 1; }"
     trivial_failing = "teardown { assert 0 == 1; }"
-    file_cleanup = 'teardown { remove "./lib.c"; }'
+    file_cleanup = 'teardown { remove "./temp.txt"; }'
 
 
 class Output:
@@ -154,7 +160,8 @@ class Program:
 
         output {
         }
-            question 1 {
+        
+        question 1 {
             # Run the program, saving output.
             run "echo", "hello world";
 
