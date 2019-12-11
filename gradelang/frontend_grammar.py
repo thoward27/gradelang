@@ -201,6 +201,8 @@ def p_builtin(p):
     builtin : ASSERT
             | ASSUME
             | PRINT
+            | TOUCH
+            | REMOVE
     """
     p[0] = p[1]
     return

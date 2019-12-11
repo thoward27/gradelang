@@ -22,6 +22,8 @@ builtins = {
     'successful': 'SUCCESSFUL',
     'failure': 'FAILURE',
     'run': 'RUN',
+    'touch': 'TOUCH',
+    'remove': "REMOVE"
 }
 
 blocks = {

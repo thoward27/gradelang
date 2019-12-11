@@ -47,6 +47,8 @@ def p_grammar(_):
     builtin : ASSERT
             | ASSUME
             | PRINT
+            | TOUCH
+            | REMOVE
 
     exp : exp PLUS exp
         | exp MINUS exp
