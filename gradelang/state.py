@@ -68,7 +68,8 @@ class State:
         if 'markdown' in self.output:
             with open("output.md", 'a') as f:
                 f.write(self.results.stdout)
-            
+
+
             
         
 
