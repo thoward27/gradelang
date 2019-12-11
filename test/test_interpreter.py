@@ -39,3 +39,7 @@ class TestSetup(unittest.TestCase):
     def test_question_program_output(self):
         interpret(Question.testing_output)
         return
+
+    def test_award_points(self):
+        interpret(Question.awarding_points)
+        return

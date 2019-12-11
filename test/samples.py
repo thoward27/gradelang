@@ -27,6 +27,12 @@ class Question:
         assert "hello world" in stdout;
     }
     """
+    awarding_points = """
+    question { 
+        assert 1 == 1;
+        award 10;
+    }
+    """
     testing_exit_success = """
     question {
         run "echo hello world";

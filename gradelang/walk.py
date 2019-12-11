@@ -2,12 +2,13 @@
 """
 
 from grade.pipeline import *
-from hypothesis.strategies import characters, floats
-
-#from .types import Program
+from hypothesis.strategies import floats
 
 from .state import state
-    
+
+
+# from .types import Program
+
 def assign(ast):
     dict = {}
     if ast[1] == 'String':
@@ -28,7 +29,8 @@ def walkParamList(ast, flat_list=[]):
     else:
 
        flat_list.append(ast[2])
-       return flat_list; 
+       return flat_list
+
 
 def getWalkedParamsAsListOfStrings(ast):
 
@@ -43,11 +45,14 @@ def getWalkedParamsAsListOfStrings(ast):
     
 def run(ast):
     if ast[1][0] != "paramlist":
-        state.update_results(Run(str(walk(ast[1])), shell=True)())
+        state.question.results = Run(str(walk(ast[1])), shell=True)()
+        # state.update_results(Run(str(walk(ast[1])), shell=True)())
     else:
         params = getWalkedParamsAsListOfStrings(ast[1])
         print("run params: ", params)
-        state.update_results(Run(params, shell=True)()) 
+        state.question.results = Run(params)()
+        # state.update_results(Run(params, shell=True)())
+
 
 def let(ast):
     #('let', ID, type, opt_param_list)
@@ -70,7 +75,6 @@ def let(ast):
     state.symbol_table.update(dict)
             
             
-    
 dispatch = {
     # (SEQ, stmt, stmt_list)
     'seq': lambda ast: (walk(ast[1]), walk(ast[2])),
@@ -85,14 +89,16 @@ dispatch = {
     'run': run,#lambda ast: state.update_results(Run(ast[1], shell=True)()),
 
     # (EXIT, code)
-    'exit': lambda ast: (AssertExitSuccess() if ast[1] == 'successful' else AssertExitFailure())(state.results),
+    'exit': lambda ast: (AssertExitSuccess() if ast[1] == 'successful' else AssertExitFailure())(state.question.results),
 
     # (IN, exp, stream)
-    'in': lambda ast: (AssertRegexStdout if ast[2] == 'stdout' else AssertRegexStderr)(pattern=walk(ast[1]))(state.results),
+    'in': lambda ast: (AssertRegexStdout if ast[2] == 'stdout' else AssertRegexStderr)(pattern=walk(ast[1]))(
+        state.question.results),
     
     #("not in", exp, stream)
     #^((?!badword).)*$
-    'notin': lambda ast: (AssertRegexStdout if ast[2] == 'stdout' else AssertRegexStderr)(pattern="^((?!" + str(walk(ast[1])) + ").)*$")(state.results),
+    'notin': lambda ast: (AssertRegexStdout if ast[2] == 'stdout' else AssertRegexStderr)(
+        pattern="^((?!" + str(walk(ast[1])) + ").)*$")(state.question.results),
 
 
     # (ASSIGN, type, id, exp)
@@ -148,7 +154,7 @@ dispatch = {
     '>': lambda ast: int(walk(ast[1])) > int(walk(ast[2])),
     
     #('award', INTEGER)
-    'award': lambda ast: state.updateAward(int(ast[1])),
+    'award': lambda ast: state.question.award(int(ast[1])),
 
     #('let', ID, type, opt_param_list)
     'let': let,    
