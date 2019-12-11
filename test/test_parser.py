@@ -31,14 +31,11 @@ class TestSetup(unittest.TestCase):
             state.setup
         )
         return
-    #TODO: new setup unit tests based on new samples
-    #def test_echo(self):
-    #    parser.parse(samples.Setup.echo)
-    #    self.assertEqual(
-    #        ('seq', ('assign', 'Program', 'prog', ('string', 'echo')), ('nil',)),
-    #        state.setup
-    #    )
-    #    return
+
+    def test_compilation(self):
+        parser.parse(samples.Setup.compilation)
+        # TODO
+        return
 
 
 class TestQuestion(unittest.TestCase):

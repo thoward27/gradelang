@@ -73,8 +73,15 @@ def let(ast):
         dict = {ast[2]: new_float}
         
     state.symbol_table.update(dict)
-            
-            
+
+
+def _assert(ast):
+    result = walk(ast)
+    if not result:
+        raise AssertionError
+    return result
+
+
 dispatch = {
     # (SEQ, stmt, stmt_list)
     'seq': lambda ast: (walk(ast[1]), walk(ast[2])),
@@ -83,7 +90,7 @@ dispatch = {
     'nil': lambda ast: '',
 
     # (ASSERT, exp)
-    'assert': lambda ast: walk(ast[1]),
+    'assert': lambda ast: _assert(ast[1]),
 
     # (RUN, STRING)
     'run': run,#lambda ast: state.update_results(Run(ast[1], shell=True)()),

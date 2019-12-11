@@ -18,9 +18,9 @@ def interpret(stream):
     parser.parse(stream, lexer=lexer)
 
     with Pool() as p:
-        questions = p.map(run, state.questions)
+        state._questions = p.map(run, state.questions)
     # TODO: OUTPUT
-    [print(q) for q in questions]
+    [print(q) for q in state.questions]
     return
 
 

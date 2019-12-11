@@ -22,3 +22,7 @@ class Question:
 
     def award(self, points):
         self.value += points
+
+    @property
+    def score(self):
+        return self.value
