@@ -7,8 +7,8 @@ from .walk import walk
 
 
 def interpret(stream):
-    # reset the state object
-    state.reset()
+    # clean the state object between runs
+    state.clean()
 
     # build the AST
     parser.parse(stream, lexer=lexer)
@@ -22,6 +22,7 @@ def interpret(stream):
 
             if state.teardown:
                 walk(state.teardown)
+            #state.reset()
         except Exception as err:
             raise
         finally:

@@ -52,7 +52,7 @@ class TestFunctional(TestCase):
         }
         question 3 {
             String x = "fish";
-            run "echo x";
+            run "echo", x;
 
             assert x in stdout;
             award 50;
