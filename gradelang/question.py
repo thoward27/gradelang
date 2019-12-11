@@ -20,6 +20,15 @@ class Question:
     def __repr__(self) -> str:
         return f'{self.name}: [{self.body}]'
 
+    def report(self):
+        return f'Question {self.name}: {self.value}.'
+
+    def json(self):
+        pass
+
+    def markdown(self):
+        pass
+
     def award(self, points):
         self.value += points
 

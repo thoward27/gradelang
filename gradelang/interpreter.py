@@ -22,18 +22,29 @@ def interpret(stream):
         state._questions = p.map(
             partial(worker, setup=state.setup, teardown=state.teardown), state.questions)
     # TODO: OUTPUT
-    [print(q) for q in state.questions]
+    [print(q.report()) for q in state.questions]
     return
 
 
 def worker(question: Question, setup, teardown):
+    """ Worker Process for questions.
+
+    Passing setup and teardown explicitly because Windows uses `spawn` instead
+    of `fork`, which means we lose the global state on Win. In either case,
+    state is not returned from neither spawn or fork, so any changes made
+    within this function cannot impact the caller.
+    """
     state.question = question
     output = io.StringIO()
     with redirect_stdout(output):
         try:
-            walk(setup)
+            if setup:
+                walk(setup)
+
             walk(question.body)
-            walk(teardown)
+
+            if teardown:
+                walk(teardown)
         except Exception as err:
             question.exception = err
         finally:
