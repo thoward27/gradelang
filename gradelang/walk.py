@@ -3,21 +3,18 @@
 
 from grade.pipeline import *
 
-from .types import Program
+#from .types import Program
 
 from .state import state
     
 def assign(ast):
     dict = {}
-    if ast[1] == 'string':
+    if ast[1] == 'String':
         dict = {ast[2]: str(ast[2])}
-    elif ast[1] == 'int':
+    elif ast[1] == 'Int':
         dict = {ast[2]: int(ast[2])}
-    elif ast[1] == "Program":
-        
-        dict = {ast[2]: Program(walk(ast[3]))}
-    else:
-        dict = {ast[2]: state.symbol_table[ast[2]](walk(ast[3]))}
+    elif ast[1] == "Float":
+        dict = {ast[2]: float(ast[2])}
         
     state.symbol_table.update(dict)
         

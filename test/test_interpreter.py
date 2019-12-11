@@ -15,10 +15,10 @@ class TestSetup(unittest.TestCase):
         """ Ensure that a simple setup is saved to state. """
         interpret(Setup.trivial_passing)
         return
-
-    def test_setup_prog(self):
-        interpret(Setup.echo)
-        return
+    #TODO new setup tests
+    #def test_setup_prog(self):
+    #    interpret(Setup.echo)
+    #    return
 
     def test_teardown_empty(self):
         interpret(Teardown.empty)

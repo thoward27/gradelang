@@ -2,10 +2,9 @@
 """
 
 types = {
-    'String': 'STRING_TYPE',
-    'Program': 'PROGRAM_TYPE',
-    'string' : 'string',
-    'int' : 'int',
+    'String' : 'String',
+    'Int' : 'Int',
+    'Float' : 'Float',
 }
 
 outputs = {
@@ -56,7 +55,7 @@ tokens = [
     # Logical
     'AND', 'OR', 'NOT',
     # Primitives
-    'STRING', 'INTEGER',
+    'STRING', 'FLOAT', 'INTEGER',
     # Other
     'ID',
     *list(reserved.values())
@@ -76,11 +75,17 @@ t_GT = r'>'
 # Logical
 t_AND = r'\&'
 t_OR = r'\|'
-t_NOT = r'!'
-# Primitive
-t_INTEGER = r'[0-9]+'
+t_NOT = r'not'
 
 
+def t_FLOAT(t):
+    r"""-?[0-9]+\.[0-9]+"""
+    return t
+ 
+def t_INTEGER(t):
+    r"""-?[0-9]+"""
+    return t
+    
 def t_ID(t):
     r"""[a-zA-Z_][a-zA-Z_0-9]*"""
     # Check for reserved words

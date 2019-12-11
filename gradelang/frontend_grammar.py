@@ -3,7 +3,7 @@
 """
 from .lexer import *
 from .state import state
-from .types import DICT as TYPE_DICT
+#from .types import DICT as TYPE_DICT
 
 #########################################################################
 # set precedence and associativity
@@ -114,15 +114,15 @@ def p_stmt_list(p):
 def p_stmt(p):
     """
     stmt : FOR ID IN type
-         | type ID '=' exp
-         | string ID '=' STRING
-         | int ID '=' INTEGER
+         | String ID '=' STRING
+         | Int ID '=' INTEGER
+         | Float ID '=' FLOAT
          | builtin exp
          | AWARD INTEGER
          | RUN STRING
     """
     if p[1] == 'for':
-        p[0] = ('for', p[2], TYPE_DICT[p[4]])
+        p[0] = ('for', p[2], p[4])
 
     elif p[1] == 'award':
         p[0] = ('award', p[2])
@@ -141,12 +141,12 @@ def p_stmt(p):
         p[0] = ('run', p[2])
         
     elif p[3] == '=':
-        if p[1] == 'string' or p[1] == 'int':
+        if p[1] == 'String' or p[1] == 'Int' or 'Float':
             p[0] = ('assign', p[1], p[2], p[4])
-        elif p[1] in types.keys():
-            dict = TYPE_DICT[p[1]]
-            state.symbol_table[p[2]] = dict
-            p[0] = ('assign', p[1], p[2], p[4])
+        #elif p[1] in types.keys():
+        #    dict = TYPE_DICT[p[1]]
+        #    state.symbol_table[p[2]] = dict
+        #    p[0] = ('assign', p[1], p[2], p[4])
 
     else:
         raise ValueError(f"Unexpected symbol {p[1]}")
@@ -155,8 +155,9 @@ def p_stmt(p):
 
 def p_type(p):
     """
-    type : STRING_TYPE
-         | PROGRAM_TYPE
+    type : String
+         | Int
+         | Float
     """
     p[0] = p[1]
     return

@@ -31,14 +31,14 @@ class TestSetup(unittest.TestCase):
             state.setup
         )
         return
-
-    def test_echo(self):
-        parser.parse(samples.Setup.echo)
-        self.assertEqual(
-            ('seq', ('assign', 'Program', 'prog', ('string', 'echo')), ('nil',)),
-            state.setup
-        )
-        return
+    #TODO: new setup unit tests based on new samples
+    #def test_echo(self):
+    #    parser.parse(samples.Setup.echo)
+    #    self.assertEqual(
+    #        ('seq', ('assign', 'Program', 'prog', ('string', 'echo')), ('nil',)),
+    #        state.setup
+    #    )
+    #    return
 
 
 class TestQuestion(unittest.TestCase):
@@ -118,7 +118,7 @@ class TestStatements(unittest.TestCase):
         return
 
     def test_assignment(self):
-        parser.parse('setup { Program p = "echo"; }')
+        parser.parse('setup { String p = "echo"; }')
         return
 
     def test_comparisons(self):

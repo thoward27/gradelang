@@ -16,11 +16,12 @@ class TestFunctional(TestCase):
         """ Nothing should pass. """
         interpreter.interpret(Program.setup_failure)
         return
-        
+    
+    
     def test_propsal_light(self):
         interpreter.interpret("""
         setup {
-            Program prog = "echo";
+            String prog = "echo";
         }
 
         teardown {}
@@ -50,7 +51,7 @@ class TestFunctional(TestCase):
             award 10;
         }
         question 3 {
-            string x = "fish";
+            String x = "fish";
             run "echo x";
 
             assert x in stdout;
