@@ -44,20 +44,8 @@ class State:
         )
         return
 
-    def update_results(self, results):
-        self.results = results
-        if self.output:
-            self.writeOutput()
-        
-    def writeOutput(self):
-        import json
-        if 'json' in self.output:
-            with open("output.json", 'a') as f:
-                jsonOutput = json.dumps(self.results.stdout)
-                f.write(jsonOutput)
-        if 'markdown' in self.output:
-            with open("output.md", 'a') as f:
-                f.write(self.results.stdout)
+    def score(self):
+        return sum(q.score for q in self.questions)
 
 
 state = State()

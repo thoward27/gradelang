@@ -32,8 +32,8 @@ class TestSetup(unittest.TestCase):
         )
         return
 
-    def test_compilation(self):
-        parser.parse(samples.Setup.compilation)
+    def test_run(self):
+        parser.parse(samples.Setup.run)
         # TODO
         return
 
@@ -103,7 +103,7 @@ class TestProgram(unittest.TestCase):
         )
         return
 
-    @unittest.skip  # TODO
+    @unittest.skip
     def test_proposal(self):
         parser.parse(samples.Program.proposal)
         return

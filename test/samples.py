@@ -85,6 +85,7 @@ class Program:
     setup_failure = '\n'.join([
         Setup.trivial_failing,
         Question.trivial_passing,
+        Question.awarding_points,
         Teardown.empty,
         Output.empty
     ])

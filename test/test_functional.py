@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, skip
 
 from gradelang import interpreter
 from .samples import *
@@ -18,6 +18,7 @@ class TestFunctional(TestCase):
         self.assertEqual(sum(q.score for q in interpreter.state.questions), 0)
         return
 
+    @skip
     def test_proposal(self):
         """ The proposal example. """
         interpreter.interpret(Program.proposal)
