@@ -155,9 +155,9 @@ def p_stmt(p):
 def p_opt_param_list(p):
     """
     opt_param_list : '(' param_list ')'
-                   | empty
+                   | '(' ')'
     """
-    if len(p) > 1:
+    if len(p) > 3:
         p[0] = p[2]
     
 def p_param_list(p):
@@ -232,6 +232,7 @@ def p_bool_exp(p):
         | exp IN STDERR
         | exp NOT IN STDOUT
         | exp NOT IN STDERR
+        
     """
     # TODO: Should this be called exited?
     if p[1] == 'exit':

@@ -2,7 +2,9 @@
 """
 
 from grade.pipeline import *
-from hypothesis.strategies import floats
+from hypothesis.strategies import characters, floats, integers
+
+#from .types import Program
 
 from .state import state
 
@@ -12,11 +14,11 @@ from .state import state
 def assign(ast):
     dict = {}
     if ast[1] == 'String':
-        dict = {ast[2]: str(ast[2])}
+        dict = {ast[2]: str(ast[3])}
     elif ast[1] == 'Int':
-        dict = {ast[2]: int(ast[2])}
+        dict = {ast[2]: int(ast[3])}
     elif ast[1] == "Float":
-        dict = {ast[2]: float(ast[2])}
+        dict = {ast[2]: float(ast[3])}
         
     state.symbol_table.update(dict)
 
@@ -35,7 +37,7 @@ def walkParamList(ast, flat_list=[]):
 def getWalkedParamsAsListOfStrings(ast):
 
     walkable_params = walkParamList(ast, [])
-        
+    
     params = []
     for node in walkable_params:
         params.append(str(walk(node)))
@@ -49,6 +51,7 @@ def run(ast):
         # state.update_results(Run(str(walk(ast[1])), shell=True)())
     else:
         params = getWalkedParamsAsListOfStrings(ast[1])
+
         print("run params: ", params)
         state.question.results = Run(params)()
         # state.update_results(Run(params, shell=True)())
@@ -63,15 +66,29 @@ def let(ast):
         else:
             params = getWalkedParamsAsListOfStrings(ast[3])
         
-    #if ast[2] == 'String':
-    #    dict = {ast[2]: str(
-    #elif ast[2] == 'Int':
-    #    dict = {ast[2]: int(ast[2])}
+    if ast[2] == 'String':
+        if params != "":
+            new_string = characters(params)
+        else:
+            new_string = characters()
+        print("string", new_string)
+        dict = {ast[1]: "This is a random string, trust me"}
+    elif ast[2] == 'Int':
+        if params != "":
+            new_int = integers(params)
+        else:
+            new_int = integers()
+        print("int", new_int)
+        dict = {ast[1]: 7}
     if ast[2] == "Float":
-        new_float = floats(params)
+        if params != "":
+            new_float = floats(params)
+        else:
+            new_float = floats()
         print("float", new_float)
-        dict = {ast[2]: new_float}
-        
+        dict = {ast[1]: 7.0}
+    
+    print("dict", dict)    
     state.symbol_table.update(dict)
 
 
@@ -99,7 +116,7 @@ dispatch = {
     'exit': lambda ast: (AssertExitSuccess() if ast[1] == 'successful' else AssertExitFailure())(state.question.results),
 
     # (IN, exp, stream)
-    'in': lambda ast: (AssertRegexStdout if ast[2] == 'stdout' else AssertRegexStderr)(pattern=walk(ast[1]))(
+    'in': lambda ast: (AssertRegexStdout if ast[2] == 'stdout' else AssertRegexStderr)(pattern=str(walk(ast[1])))(
         state.question.results),
     
     #("not in", exp, stream)

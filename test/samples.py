@@ -105,7 +105,9 @@ class Program:
             json;
         }
 
-        question 1 {
+        output {
+        }
+            question 1 {
             # Run the program, saving output.
             run "echo", "hello world";
 
@@ -113,7 +115,7 @@ class Program:
             assert exit successful;
 
             # This checks both stdout and stderr
-            assert 'hello' in stdout;
+            assert "hello" in stdout;
 
             award 10;
         }
@@ -128,11 +130,24 @@ class Program:
         }
 
         question 3 {
-            let x be String(minlength=1);
+            let x be Float(minvalue=1);
             run "echo", x;
 
             # If we want to just look at stdout.
-            assert stdout == x;
+            assert x in stdout;
+            
+            String y = "fish";
+            run "echo", y;
+            assert "fish" in stdout;
+            
+            let z be String();
+            run "echo", z;
+            assert z in stdout;
+            
+            let camel be Int(min_value=6);
+            run "echo", camel;
+            assert camel in stdout;
+            
             award 50;
         }
         """
@@ -166,17 +181,28 @@ class Program:
             award 10;
             assert "hello" in stdout;
             assert "hello" not in stderr;
-            #let x be Float(minvalue=1);
             award 10;
         }
 
         question 3 {
             let x be Float(minvalue=1);
-            #run "echo", x;
+            run "echo", x;
 
             # If we want to just look at stdout.
-        #    assert stdout == x;
+            assert x in stdout;
             
-        #    award 50;
+            String y = "fish";
+            run "echo", y;
+            assert "fish" in stdout;
+            
+            let z be String();
+            run "echo", z;
+            assert z in stdout;
+            
+            let camel be Int(min_value=6);
+            run "echo", camel;
+            assert camel in stdout;
+            
+            award 50;
         }
     """
