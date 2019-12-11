@@ -32,9 +32,10 @@ blocks = {
 }
 
 stmts = {
-    'for': 'FOR',
+    'let': 'LET',
     'award': 'AWARD',
     'in': 'IN',
+    'be':'BE',
 }
 
 reserved = {
@@ -94,7 +95,7 @@ def t_ID(t):
 
 
 def t_STRING(t):
-    r"""\"[^"]*\""""
+    r"""(\"[^"]*\")|(\'[^']*\')"""
     t.value = t.value[1:-1]  # strip the quotes
     return t
 

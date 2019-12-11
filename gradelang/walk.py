@@ -17,8 +17,31 @@ def assign(ast):
         dict = {ast[2]: float(ast[2])}
         
     state.symbol_table.update(dict)
-        
+
+def walkParamList(ast, flat_list=[]):
     
+    flat_list.append(ast[1])
+    if ast[2][0] == "paramlist":
+
+       walkParamList(ast[2], flat_list)
+    else:
+
+       flat_list.append(ast[2])
+       return flat_list;    
+    
+def run(ast):
+
+    if ast[1][0] != "paramlist":
+        state.update_results(Run(str(walk(ast[1])), shell=True)())
+        
+    else:
+        walkable_params = walkParamList(ast[1], [])
+      
+        params = []
+        for node in walkable_params:
+            params.append(str(walk(node)))
+        #print("run parameters", params)
+        state.update_results(Run(params, shell=True)())       
     
 dispatch = {
     # (SEQ, stmt, stmt_list)
@@ -31,13 +54,18 @@ dispatch = {
     'assert': lambda ast: walk(ast[1]),
 
     # (RUN, STRING)
-    'run': lambda ast: state.update_results(Run(ast[1], shell=True)()),
+    'run': run,#lambda ast: state.update_results(Run(ast[1], shell=True)()),
 
     # (EXIT, code)
     'exit': lambda ast: (AssertExitSuccess() if ast[1] == 'successful' else AssertExitFailure())(state.results),
 
     # (IN, exp, stream)
     'in': lambda ast: (AssertRegexStdout if ast[2] == 'stdout' else AssertRegexStderr)(pattern=walk(ast[1]))(state.results),
+    
+    #("not in", exp, stream)
+    #^((?!badword).)*$
+    'not in': lambda ast: (AssertRegexStdout if ast[2] == 'stdout' else AssertRegexStderr)(pattern="^((?!" + str(walk(ast[1])) + ").)*$")(state.results),
+
 
     # (ASSIGN, type, id, exp)
     #'assign': lambda ast: state.symbol_table.update({ast[2]: state.symbol_table[ast[2]](walk(ast[3]))}),
@@ -56,7 +84,7 @@ dispatch = {
     'uminus': lambda ast: -int(walk(ast[1])),
 
     # (NOT, exp)
-    '!': lambda ast: int(not walk(ast[1])),
+    'not': lambda ast: int(not walk(ast[1])),
 
     # (and, exp, exp)
     '&': lambda ast: int(bool(walk(ast[1])) and bool(walk(ast[2]))),

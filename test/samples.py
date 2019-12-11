@@ -129,3 +129,44 @@ class Program:
             award 50;
         }
         """
+        
+    proposal_questions = """
+        setup {
+        }
+
+        teardown {
+        }
+
+        output {
+        }
+            question 1 {
+            # Run the program, saving output.
+            run "echo", "hello world";
+
+            # Now let's run some checks.
+            assert exit successful;
+
+            # This checks both stdout and stderr
+            assert "hello" in stdout;
+
+            award 10;
+        }
+
+        question 2  {
+            run "echo", "hello world";
+            #assert "goodbye" not in stdout;
+            award 10;
+            assert "hello" in stdout;
+            #assert "hello" not in stderr;
+            award 10;
+        }
+
+        #question 3 {
+        #    let x be String(minlength=1);
+        #    run "echo", x;
+
+            # If we want to just look at stdout.
+        #    assert stdout == x;
+        #    award 50;
+        #}
+    """

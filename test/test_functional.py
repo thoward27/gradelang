@@ -60,6 +60,9 @@ class TestFunctional(TestCase):
 
         """)
         return
+        
+    def test_proposal_questions(self):
+        interpreter.interpret(Program.proposal_questions)
 
     @unittest.skip  # TODO
     def test_proposal(self):

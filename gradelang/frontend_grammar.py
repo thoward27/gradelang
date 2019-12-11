@@ -113,16 +113,16 @@ def p_stmt_list(p):
 
 def p_stmt(p):
     """
-    stmt : FOR ID IN type
+    stmt : LET ID BE type
          | String ID '=' STRING
          | Int ID '=' INTEGER
          | Float ID '=' FLOAT
          | builtin exp
          | AWARD INTEGER
-         | RUN STRING
+         | RUN param_list
     """
-    if p[1] == 'for':
-        p[0] = ('for', p[2], p[4])
+    if p[1] == 'let':
+        p[0] = ('let', p[2], p[4])
 
     elif p[1] == 'award':
         p[0] = ('award', p[2])
@@ -151,6 +151,23 @@ def p_stmt(p):
     else:
         raise ValueError(f"Unexpected symbol {p[1]}")
     return
+    
+def p_param_list(p):
+    """
+    param_list : param ',' param_list
+               | param
+    """
+    #print("parsing paramlist", len(p), p)
+    if len(p) == 4:
+        p[0] = ("paramlist", p[1], p[3])
+    else:
+        p[0] = p[1]
+        
+def p_param(p):
+    """
+    param : exp
+    """
+    p[0] = p[1]
 
 
 def p_type(p):
@@ -197,12 +214,16 @@ def p_bool_exp(p):
         | EXIT FAILURE
         | exp IN STDOUT
         | exp IN STDERR
+        | exp NOT IN STDOUT
+        | exp NOT IN STDERR
     """
     # TODO: Should this be called exited?
     if p[1] == 'exit':
         p[0] = ('exit', p[2])
     elif p[2] == 'in':
         p[0] = ('in', p[1], p[3])
+    elif p[3] == 'in':
+        p[0] = ('not in', p[1], p[3])
     return
 
 
@@ -211,6 +232,13 @@ def p_integer_exp(p):
     exp : INTEGER
     """
     p[0] = ('integer', int(p[1]))
+    return
+    
+def p_float_exp(p):
+    """
+    exp : FLOAT
+    """
+    p[0] = ('float', float(p[1]))
     return
 
 
@@ -249,7 +277,7 @@ def p_not_exp(p):
     """
     exp : NOT exp
     """
-    p[0] = ('!', p[2])
+    p[0] = ('not', p[2])
 
 
 def p_empty(p):
