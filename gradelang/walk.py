@@ -108,7 +108,7 @@ dispatch = {
     # (ASSERT, exp)
     'assert': lambda ast: _assert(ast[1]),
 
-    # (TOUGH, STRING)
+    # (TOUCH, STRING)
     'touch': lambda ast: (open(ast[1], "w+")),
 
     # (RUN, STRING)
