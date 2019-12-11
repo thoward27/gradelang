@@ -3,7 +3,7 @@
 """
 from .lexer import *
 from .state import state
-from .types import DICT as TYPE_DICT
+#from .types import DICT as TYPE_DICT
 
 #########################################################################
 # set precedence and associativity
@@ -21,11 +21,11 @@ precedence = (
 #########################################################################
 # grammar rules with embedded actions
 #########################################################################
-def p_prog(p):
+def p_prog(_):
     """
     prog : block_list
     """
-    state.AST = p[1]
+    return
 
 
 def p_block_list(p):
@@ -113,16 +113,16 @@ def p_stmt_list(p):
 
 def p_stmt(p):
     """
-    stmt : FOR ID IN type
-         | type ID '=' exp
-         | string ID '=' STRING
-         | int ID '=' INTEGER
+    stmt : LET ID BE type opt_param_list
+         | String ID '=' STRING
+         | Int ID '=' INTEGER
+         | Float ID '=' FLOAT
          | builtin exp
          | AWARD INTEGER
-         | RUN STRING
+         | RUN param_list
     """
-    if p[1] == 'for':
-        p[0] = ('for', p[2], TYPE_DICT[p[4]])
+    if p[1] == 'let':
+        p[0] = ('let', p[2], p[4], p[5])
 
     elif p[1] == 'award':
         p[0] = ('award', p[2])
@@ -141,22 +141,56 @@ def p_stmt(p):
         p[0] = ('run', p[2])
         
     elif p[3] == '=':
-        if p[1] == 'string' or p[1] == 'int':
+        if p[1] == 'String' or p[1] == 'Int' or 'Float':
             p[0] = ('assign', p[1], p[2], p[4])
-        elif p[1] in types.keys():
-            dict = TYPE_DICT[p[1]]
-            state.symbol_table[p[2]] = dict
-            p[0] = ('assign', p[1], p[2], p[4])
+        #elif p[1] in types.keys():
+        #    dict = TYPE_DICT[p[1]]
+        #    state.symbol_table[p[2]] = dict
+        #    p[0] = ('assign', p[1], p[2], p[4])
 
     else:
         raise ValueError(f"Unexpected symbol {p[1]}")
     return
+    
+def p_opt_param_list(p):
+    """
+    opt_param_list : '(' param_list ')'
+                   | '(' ')'
+    """
+    if len(p) > 3:
+        p[0] = p[2]
+    
+def p_param_list(p):
+    """
+    param_list : param ',' param_list
+               | param
+    """
+    #print("parsing paramlist", len(p), p)
+    if len(p) == 4:
+        p[0] = ("paramlist", p[1], p[3])
+    else:
+        p[0] = p[1]
+        
+def p_param(p):
+    """
+    param : exp
+          | param_assign
+
+    """
+    p[0] = p[1]
+    
+def p_param_assign(p):
+    """
+    param_assign : ID '=' exp
+    """
+    p[0]= ("paramassign", p[1], p[3])
 
 
 def p_type(p):
     """
-    type : STRING_TYPE
-         | PROGRAM_TYPE
+    type : String
+         | Int
+         | Float
     """
     p[0] = p[1]
     return
@@ -196,12 +230,17 @@ def p_bool_exp(p):
         | EXIT FAILURE
         | exp IN STDOUT
         | exp IN STDERR
+        | exp NOT IN STDOUT
+        | exp NOT IN STDERR
+        
     """
     # TODO: Should this be called exited?
     if p[1] == 'exit':
         p[0] = ('exit', p[2])
     elif p[2] == 'in':
         p[0] = ('in', p[1], p[3])
+    elif p[3] == 'in':
+        p[0] = ('notin', p[1], p[3])
     return
 
 
@@ -210,6 +249,13 @@ def p_integer_exp(p):
     exp : INTEGER
     """
     p[0] = ('integer', int(p[1]))
+    return
+    
+def p_float_exp(p):
+    """
+    exp : FLOAT
+    """
+    p[0] = ('float', float(p[1]))
     return
 
 
@@ -248,7 +294,7 @@ def p_not_exp(p):
     """
     exp : NOT exp
     """
-    p[0] = ('!', p[2])
+    p[0] = ('not', p[2])
 
 
 def p_empty(p):

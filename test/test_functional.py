@@ -1,5 +1,4 @@
-import unittest
-from unittest import TestCase
+from unittest import TestCase, skip
 
 from gradelang import interpreter
 from .samples import *
@@ -8,6 +7,7 @@ from .samples import *
 class TestFunctional(TestCase):
 
     def test_empty(self):
+        """ A completely empty program. """
         interpreter.interpret(Program.empty)
         self.assertEqual(('nil',), interpreter.state.setup)
         return
@@ -15,52 +15,16 @@ class TestFunctional(TestCase):
     def test_setup_failure(self):
         """ Nothing should pass. """
         interpreter.interpret(Program.setup_failure)
-        return
-        
-    def test_propsal_light(self):
-        interpreter.interpret("""
-        setup {
-            Program prog = "echo";
-        }
-
-        teardown {}
-
-        output {
-            json; 
-            markdown;
-        }
-
-        question 1 {
-            # Run the program, saving output.
-            run "echo hello world";
-
-            # Now let's run some checks.
-            assert exit successful;
-
-            # This checks both stdout and stderr
-            assert "hello" in stdout;
-
-            award 10;
-        }
-        question 2  {
-            run "echo hello world";
-            assert "world" in stdout;
-            award 10;
-            assert "hello" in stdout;
-            award 10;
-        }
-        question 3 {
-            string x = "fish";
-            run "echo x";
-
-            assert x in stdout;
-            award 50;
-        }
-
-        """)
+        self.assertEqual(sum(q.score for q in interpreter.state.questions), 0)
         return
 
-    @unittest.skip  # TODO
+    @skip
     def test_proposal(self):
+        """ The proposal example. """
         interpreter.interpret(Program.proposal)
+        return
+
+    def test_proposal_questions(self):
+        """ Proposal with just questions. """
+        interpreter.interpret(Program.proposal_questions)
         return

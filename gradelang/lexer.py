@@ -2,10 +2,9 @@
 """
 
 types = {
-    'String': 'STRING_TYPE',
-    'Program': 'PROGRAM_TYPE',
-    'string' : 'string',
-    'int' : 'int',
+    'String' : 'String',
+    'Int' : 'Int',
+    'Float' : 'Float',
 }
 
 outputs = {
@@ -33,9 +32,16 @@ blocks = {
 }
 
 stmts = {
-    'for': 'FOR',
+    'let': 'LET',
     'award': 'AWARD',
     'in': 'IN',
+    'be':'BE',
+}
+
+logical = {
+    'not': 'NOT',
+    'and': 'AND',
+    'or' : 'OR',
 }
 
 reserved = {
@@ -44,6 +50,7 @@ reserved = {
     **blocks,
     **stmts,
     **outputs,
+    **logical,
 }
 
 literals = ['=', '>', '<', '(', ')', ',', '{', '}', ';']
@@ -54,13 +61,14 @@ tokens = [
     # Equality
     'EQ', 'LE', 'GE', 'LT', 'GT',
     # Logical
-    'AND', 'OR', 'NOT',
+    #'AND', 'OR', 'NOT',
     # Primitives
-    'STRING', 'INTEGER',
+    'STRING', 'FLOAT', 'INTEGER',
     # Other
-    'ID',
+    'ID', 
     *list(reserved.values())
 ]
+
 
 # Mathematical
 t_PLUS = r'\+'
@@ -74,13 +82,19 @@ t_LT = r'<'
 t_GE = r'>='
 t_GT = r'>'
 # Logical
-t_AND = r'\&'
-t_OR = r'\|'
-t_NOT = r'!'
-# Primitive
-t_INTEGER = r'[0-9]+'
+#t_AND = r'\&'
+#t_OR = r'\|'
+#t_NOT = r'not'
 
 
+def t_FLOAT(t):
+    r"""-?[0-9]+\.[0-9]+"""
+    return t
+ 
+def t_INTEGER(t):
+    r"""-?[0-9]+"""
+    return t
+    
 def t_ID(t):
     r"""[a-zA-Z_][a-zA-Z_0-9]*"""
     # Check for reserved words
@@ -89,9 +103,14 @@ def t_ID(t):
 
 
 def t_STRING(t):
-    r"""\"[^"]*\""""
+    r"""(\"[^"]*\")|(\'[^']*\')"""
     t.value = t.value[1:-1]  # strip the quotes
     return t
+    
+#def t_PARAM_ASSIGN(t):
+#    r"""[a-zA-Z_]+\=[a-zA-Z_0-9]+"""
+#    #t.type = reserved.get(t.value, "PARAM_ASSIGN")
+#    return t
 
 
 def t_NEWLINE(t):

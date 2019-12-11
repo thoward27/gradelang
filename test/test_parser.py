@@ -32,12 +32,9 @@ class TestSetup(unittest.TestCase):
         )
         return
 
-    def test_echo(self):
-        parser.parse(samples.Setup.echo)
-        self.assertEqual(
-            ('seq', ('assign', 'Program', 'prog', ('string', 'echo')), ('nil',)),
-            state.setup
-        )
+    def test_run(self):
+        parser.parse(samples.Setup.run)
+        # TODO
         return
 
 
@@ -82,6 +79,10 @@ class TestSave(unittest.TestCase):
 
 
 class TestProgram(unittest.TestCase):
+    def setUp(self) -> None:
+        state.clean()
+        return
+
     def test_empty(self):
         parser.parse(samples.Program.empty)
         self.assertEqual(
@@ -102,7 +103,7 @@ class TestProgram(unittest.TestCase):
         )
         return
 
-    @unittest.skip  # TODO
+    @unittest.skip
     def test_proposal(self):
         parser.parse(samples.Program.proposal)
         return
@@ -114,7 +115,7 @@ class TestStatements(unittest.TestCase):
         return
 
     def test_assignment(self):
-        parser.parse('setup { Program p = "echo"; }')
+        parser.parse('setup { String p = "echo"; }')
         return
 
     def test_comparisons(self):
