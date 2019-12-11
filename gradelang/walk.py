@@ -2,6 +2,7 @@
 """
 
 from grade.pipeline import *
+from hypothesis.strategies import characters, floats
 
 #from .types import Program
 
@@ -27,21 +28,48 @@ def walkParamList(ast, flat_list=[]):
     else:
 
        flat_list.append(ast[2])
-       return flat_list;    
+       return flat_list; 
+
+def getWalkedParamsAsListOfStrings(ast):
+
+    walkable_params = walkParamList(ast, [])
+        
+    params = []
+    for node in walkable_params:
+        params.append(str(walk(node)))
+            
+    return params
+        
     
 def run(ast):
-
     if ast[1][0] != "paramlist":
         state.update_results(Run(str(walk(ast[1])), shell=True)())
-        
     else:
-        walkable_params = walkParamList(ast[1], [])
-      
-        params = []
-        for node in walkable_params:
-            params.append(str(walk(node)))
-        #print("run parameters", params)
-        state.update_results(Run(params, shell=True)())       
+        params = getWalkedParamsAsListOfStrings(ast[1])
+        print("run params: ", params)
+        state.update_results(Run(params, shell=True)()) 
+
+def let(ast):
+    #('let', ID, type, opt_param_list)
+    params = ""
+    if ast[3]:
+        if ast[3][1] != "paramlist":
+            params = str(walk(ast[3]))
+        else:
+            params = getWalkedParamsAsListOfStrings(ast[3])
+        
+    #if ast[2] == 'String':
+    #    dict = {ast[2]: str(
+    #elif ast[2] == 'Int':
+    #    dict = {ast[2]: int(ast[2])}
+    if ast[2] == "Float":
+        new_float = floats(params)
+        print("float", new_float)
+        dict = {ast[2]: new_float}
+        
+    state.symbol_table.update(dict)
+            
+            
     
 dispatch = {
     # (SEQ, stmt, stmt_list)
@@ -64,7 +92,7 @@ dispatch = {
     
     #("not in", exp, stream)
     #^((?!badword).)*$
-    'not in': lambda ast: (AssertRegexStdout if ast[2] == 'stdout' else AssertRegexStderr)(pattern="^((?!" + str(walk(ast[1])) + ").)*$")(state.results),
+    'notin': lambda ast: (AssertRegexStdout if ast[2] == 'stdout' else AssertRegexStderr)(pattern="^((?!" + str(walk(ast[1])) + ").)*$")(state.results),
 
 
     # (ASSIGN, type, id, exp)
@@ -76,6 +104,9 @@ dispatch = {
 
     # (STRING, value)
     'string': lambda ast: ast[1],
+    
+    # (PARAM_ASSIGN, ID, exp)
+    'paramassign': lambda ast: walk(ast[2]),
 
     # (ID, value)
     'id': lambda ast: state.symbol_table[ast[1]],
@@ -117,7 +148,10 @@ dispatch = {
     '>': lambda ast: int(walk(ast[1])) > int(walk(ast[2])),
     
     #('award', INTEGER)
-    'award': lambda ast: state.updateAward(int(ast[1])),    
+    'award': lambda ast: state.updateAward(int(ast[1])),
+
+    #('let', ID, type, opt_param_list)
+    'let': let,    
 }
 
 

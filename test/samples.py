@@ -154,19 +154,21 @@ class Program:
 
         question 2  {
             run "echo", "hello world";
-            #assert "goodbye" not in stdout;
+            assert "goodbye" not in stdout;
             award 10;
             assert "hello" in stdout;
-            #assert "hello" not in stderr;
+            assert "hello" not in stderr;
+            #let x be Float(minvalue=1);
             award 10;
         }
 
-        #question 3 {
-        #    let x be String(minlength=1);
-        #    run "echo", x;
+        question 3 {
+            let x be Float(minvalue=1);
+            #run "echo", x;
 
             # If we want to just look at stdout.
         #    assert stdout == x;
+            
         #    award 50;
-        #}
+        }
     """

@@ -113,7 +113,7 @@ def p_stmt_list(p):
 
 def p_stmt(p):
     """
-    stmt : LET ID BE type
+    stmt : LET ID BE type opt_param_list
          | String ID '=' STRING
          | Int ID '=' INTEGER
          | Float ID '=' FLOAT
@@ -122,7 +122,7 @@ def p_stmt(p):
          | RUN param_list
     """
     if p[1] == 'let':
-        p[0] = ('let', p[2], p[4])
+        p[0] = ('let', p[2], p[4], p[5])
 
     elif p[1] == 'award':
         p[0] = ('award', p[2])
@@ -152,6 +152,14 @@ def p_stmt(p):
         raise ValueError(f"Unexpected symbol {p[1]}")
     return
     
+def p_opt_param_list(p):
+    """
+    opt_param_list : '(' param_list ')'
+                   | empty
+    """
+    if len(p) > 1:
+        p[0] = p[2]
+    
 def p_param_list(p):
     """
     param_list : param ',' param_list
@@ -166,8 +174,16 @@ def p_param_list(p):
 def p_param(p):
     """
     param : exp
+          | param_assign
+
     """
     p[0] = p[1]
+    
+def p_param_assign(p):
+    """
+    param_assign : ID '=' exp
+    """
+    p[0]= ("paramassign", p[1], p[3])
 
 
 def p_type(p):
@@ -223,7 +239,7 @@ def p_bool_exp(p):
     elif p[2] == 'in':
         p[0] = ('in', p[1], p[3])
     elif p[3] == 'in':
-        p[0] = ('not in', p[1], p[3])
+        p[0] = ('notin', p[1], p[3])
     return
 
 

@@ -38,12 +38,19 @@ stmts = {
     'be':'BE',
 }
 
+logical = {
+    'not': 'NOT',
+    'and': 'AND',
+    'or' : 'OR',
+}
+
 reserved = {
     **types,
     **builtins,
     **blocks,
     **stmts,
     **outputs,
+    **logical,
 }
 
 literals = ['=', '>', '<', '(', ')', ',', '{', '}', ';']
@@ -54,13 +61,14 @@ tokens = [
     # Equality
     'EQ', 'LE', 'GE', 'LT', 'GT',
     # Logical
-    'AND', 'OR', 'NOT',
+    #'AND', 'OR', 'NOT',
     # Primitives
     'STRING', 'FLOAT', 'INTEGER',
     # Other
-    'ID',
+    'ID', 
     *list(reserved.values())
 ]
+
 
 # Mathematical
 t_PLUS = r'\+'
@@ -74,9 +82,9 @@ t_LT = r'<'
 t_GE = r'>='
 t_GT = r'>'
 # Logical
-t_AND = r'\&'
-t_OR = r'\|'
-t_NOT = r'not'
+#t_AND = r'\&'
+#t_OR = r'\|'
+#t_NOT = r'not'
 
 
 def t_FLOAT(t):
@@ -98,6 +106,11 @@ def t_STRING(t):
     r"""(\"[^"]*\")|(\'[^']*\')"""
     t.value = t.value[1:-1]  # strip the quotes
     return t
+    
+#def t_PARAM_ASSIGN(t):
+#    r"""[a-zA-Z_]+\=[a-zA-Z_0-9]+"""
+#    #t.type = reserved.get(t.value, "PARAM_ASSIGN")
+#    return t
 
 
 def t_NEWLINE(t):
