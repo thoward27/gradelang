@@ -3,7 +3,7 @@
 
 from grade.pipeline import *
 from hypothesis.strategies import characters, floats, integers
-
+import os
 # from .types import Program
 
 from .state import state
@@ -110,6 +110,10 @@ dispatch = {
 
     # (TOUCH, STRING)
     'touch': lambda ast: (open(ast[1], "w+")),
+
+    # (REMOVE, STRING)
+
+    'remove': lambda ast: (os.remove(ast[1])),
 
     # (RUN, STRING)
     'run': run,  # lambda ast: state.update_results(Run(ast[1], shell=True)()),

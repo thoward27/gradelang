@@ -31,7 +31,6 @@ class TestSetup(unittest.TestCase):
         interpret(Setup.run)
         return
 
-    @unittest.skip
     def test_touch(self):
         interpret(Setup.touch)
         self.assertTrue(os.path.exists('temp.txt'))
