@@ -88,6 +88,15 @@ class Program:
         Output.empty
     ])
 
+    output_json = '\n'.join([
+        Setup.trivial_passing,
+        Question.trivial_passing,
+        Question.trivial_failing,
+        Question.awarding_points,
+        Teardown.empty,
+        Output.json
+    ])
+
     proposal = """
         setup {
             touch "temp.txt";

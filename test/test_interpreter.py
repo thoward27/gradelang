@@ -136,3 +136,7 @@ class TestProgram(unittest.TestCase):
     def test_proposal_questions(self):
         interpret(Program.proposal_questions)
         return
+
+    def test_output_json(self):
+        interpret(Program.output_json)
+        return

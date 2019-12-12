@@ -23,11 +23,11 @@ def interpret(stream):
         state._questions = p.map(
             partial(worker, setup=state.setup, teardown=state.teardown), state.questions)
     if not state.output:
-        [print(q.report()) for q in state.questions]
+        print(state.report())
     elif 'json' in state.output:
-        print(state.json)
+        print(state.json())
     elif 'markdown' in state.output:
-        print(state.markdown)
+        print(state.markdown())
     return
 
 
