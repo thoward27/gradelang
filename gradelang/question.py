@@ -21,7 +21,12 @@ class Question:
         return f'{self.name}: [{self.body}]'
 
     def report(self):
-        return f'Question {self.name}: {self.score}/{self.max_score}.'
+        base = f'Question {self.name}: {self.score}/{self.max_score}.'
+        if self.exception:
+            '\n'.join([base, f'Exception thrown: {self.exception}'])
+        if self.output:
+            '\n'.join([base, f'Output: {self.output}'])
+        return base
 
     def json(self):
         pass
