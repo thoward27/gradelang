@@ -45,7 +45,7 @@ class TestQuestion(unittest.TestCase):
     def test_empty(self):
         parser.parse(samples.Question.empty)
         self.assertListEqual(
-            [Question(name=0, body=('nil',))],
+            [Question(name='empty', body=('nil',))],
             list(state.questions),
         )
         return
@@ -53,7 +53,7 @@ class TestQuestion(unittest.TestCase):
     def test_trivial_passing(self):
         parser.parse(samples.Question.trivial_passing)
         self.assertListEqual(
-            [Question(name=0, body=('seq', ('assert', ('==', ('integer', 1), ('integer', 1))), ('nil',)))],
+            [Question(name='trivial_passing', body=('seq', ('assert', ('==', ('integer', 1), ('integer', 1))), ('nil',)))],
             list(state.questions),
         )
         return
@@ -61,7 +61,7 @@ class TestQuestion(unittest.TestCase):
     def test_trivial_failing(self):
         parser.parse(samples.Question.trivial_failing)
         self.assertListEqual(
-            [Question(name=0, body=('seq', ('assert', ('==', ('integer', 0), ('integer', 1))), ('nil',)))],
+            [Question(name='trivial_failing', body=('seq', ('assert', ('==', ('integer', 0), ('integer', 1))), ('nil',)))],
             list(state.questions),
         )
         return
@@ -89,7 +89,7 @@ class TestProgram(unittest.TestCase):
             state.setup
         )
         self.assertListEqual(
-            [Question(name=0, body=('nil',))],
+            [Question(name='empty', body=('nil',))],
             list(state.questions)
         )
         self.assertEqual(
