@@ -21,7 +21,7 @@ class Question:
         return f'{self.name}: [{self.body}]'
 
     def report(self):
-        return f'Question {self.name}: {self.value}.'
+        return f'Question {self.name}: {self.score}/{self.max_score}.'
 
     def json(self):
         pass
@@ -35,3 +35,16 @@ class Question:
     @property
     def score(self):
         return self.value
+
+    @property
+    def max_score(self):
+
+        def find(node) -> int:
+            if node[0] == 'award':
+                return int(node[1])
+            elif node[0] == 'seq':
+                return find(node[1]) + find(node[2])
+            else:
+                return 0
+
+        return find(self.body)

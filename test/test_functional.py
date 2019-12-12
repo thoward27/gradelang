@@ -27,4 +27,5 @@ class TestFunctional(TestCase):
     def test_proposal_questions(self):
         """ Proposal with just questions. """
         interpreter.interpret(Program.proposal_questions)
+        self.assertGreater(interpreter.state.score(), 0)
         return
