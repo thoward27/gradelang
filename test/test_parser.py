@@ -103,7 +103,6 @@ class TestProgram(unittest.TestCase):
         )
         return
 
-    @unittest.skip
     def test_proposal(self):
         parser.parse(samples.Program.proposal)
         return

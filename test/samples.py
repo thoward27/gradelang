@@ -65,8 +65,6 @@ class Teardown:
 class Output:
     """ Output Snippets.
     """
-    # TODO: Tom's Job
-    # TODO: Default output mode.
     empty = "output {}"
     json = 'output { json; }'
     markdown = 'output { markdown; }'
@@ -88,6 +86,15 @@ class Program:
         Question.awarding_points,
         Teardown.empty,
         Output.empty
+    ])
+
+    output_json = '\n'.join([
+        Setup.trivial_passing,
+        Question.trivial_passing,
+        Question.trivial_failing,
+        Question.awarding_points,
+        Teardown.empty,
+        Output.json
     ])
 
     proposal = """
