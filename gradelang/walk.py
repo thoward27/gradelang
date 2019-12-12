@@ -35,13 +35,23 @@ def walkParamList(ast, flat_list=[]):
         return flat_list
 
 
+<<<<<<< HEAD
+def getWalkedParamsAsList(ast):
+
+=======
 def getWalkedParamsAsListOfStrings(ast):
+>>>>>>> a3acdee3ced014a26763f4c88b68b6f0d1222fc1
     walkable_params = walkParamList(ast, [])
 
     params = []
     for node in walkable_params:
+<<<<<<< HEAD
+        params.append(walk(node))
+            
+=======
         params.append(str(walk(node)))
 
+>>>>>>> a3acdee3ced014a26763f4c88b68b6f0d1222fc1
     return params
 
 
@@ -50,7 +60,9 @@ def run(ast):
         state.question.results = Run(str(walk(ast[1])), shell=True)()
         # state.update_results(Run(str(walk(ast[1])), shell=True)())
     else:
-        params = getWalkedParamsAsListOfStrings(ast[1])
+        params = getWalkedParamsAsList(ast[1])
+        
+        params = [str(i) for i in params]
 
         print("run params: ", params)
         state.question.results = Run(params)()
@@ -62,33 +74,33 @@ def let(ast):
     params = ""
     if ast[3]:
         if ast[3][1] != "paramlist":
-            params = str(walk(ast[3]))
+            params = walk(ast[3])
         else:
-            params = getWalkedParamsAsListOfStrings(ast[3])
-
+            params = getWalkedParamsAsList(ast[3])
+        
     if ast[2] == 'String':
         if params != "":
             new_string = characters(params)
         else:
             new_string = characters()
-        print("string", new_string)
-        dict = {ast[1]: "This is a random string, trust me"}
+        #print("string", new_string)
+        dict = {ast[1]: new_string.example()}
     elif ast[2] == 'Int':
         if params != "":
             new_int = integers(params)
         else:
             new_int = integers()
-        print("int", new_int)
-        dict = {ast[1]: 7}
+        #print("int", new_int)
+        dict = {ast[1]: new_int.example()}
     if ast[2] == "Float":
         if params != "":
             new_float = floats(params)
         else:
             new_float = floats()
-        print("float", new_float)
-        dict = {ast[1]: 7.0}
+        #print("float", new_float.example())
+        dict = {ast[1]: new_float.example()}
 
-    print("dict", dict)
+    #print("dict", dict)
     state.symbol_table.update(dict)
 
 
