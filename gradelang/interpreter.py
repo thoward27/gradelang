@@ -1,6 +1,7 @@
 """ gradelang Interpreter.
 """
 import io
+import traceback
 from contextlib import redirect_stdout
 from functools import partial
 from multiprocessing.pool import Pool
@@ -46,7 +47,8 @@ def worker(question: Question, setup, teardown):
             if teardown:
                 walk(teardown)
         except Exception as err:
-            question.exception = err
+            question.exception = repr(err)
+            question.traceback = traceback.format_exc()
         finally:
             question.output = output.getvalue()
             return question

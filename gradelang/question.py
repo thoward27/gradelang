@@ -9,6 +9,7 @@ class Question:
         self.results = None
         self.output = None
         self.exception = None
+        self.traceback = None
         return
 
     def __eq__(self, other: 'Question') -> bool:
@@ -23,13 +24,17 @@ class Question:
     def report(self):
         base = f'Question {self.name}: {self.score}/{self.max_score}.'
         if self.exception:
-            '\n'.join([base, f'Exception thrown: {self.exception}'])
+            base = '\n'.join([base, f'Exception thrown: {self.exception}\n{self.traceback}'])
         if self.output:
-            '\n'.join([base, f'Output: {self.output}'])
+            base = '\n'.join([base, f'Output: {self.output}'])
         return base
 
     def json(self):
-        pass
+        return {
+            'name': self.name,
+            'max_score': self.max_score,
+            'score': self.score,
+        }
 
     def markdown(self):
         pass
