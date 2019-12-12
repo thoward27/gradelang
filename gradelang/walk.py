@@ -35,23 +35,15 @@ def walkParamList(ast, flat_list=[]):
         return flat_list
 
 
-<<<<<<< HEAD
+
 def getWalkedParamsAsList(ast):
 
-=======
-def getWalkedParamsAsListOfStrings(ast):
->>>>>>> a3acdee3ced014a26763f4c88b68b6f0d1222fc1
     walkable_params = walkParamList(ast, [])
 
     params = []
     for node in walkable_params:
-<<<<<<< HEAD
         params.append(walk(node))
             
-=======
-        params.append(str(walk(node)))
-
->>>>>>> a3acdee3ced014a26763f4c88b68b6f0d1222fc1
     return params
 
 
