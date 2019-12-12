@@ -39,8 +39,6 @@ class State:
             Question(
                 name=name if name != ('nil',) else len(self._questions),
                 body=body,
-                # TODO: Can we sum all possible points? AKA # of AWARD statements?
-                value=0
             )
         )
         return

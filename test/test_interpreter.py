@@ -1,5 +1,6 @@
 import os
 import unittest
+from tempfile import TemporaryDirectory
 
 from gradelang.interpreter import *
 from .samples import *
@@ -88,11 +89,11 @@ class TestTeardown(unittest.TestCase):
     def test_file_cleanup(self):
         # This should fail.
         interpret(Teardown.file_cleanup)
-        # TODO: Use tempfile
-        with open('temp.txt', 'w') as f:
-            f.write('')
-        # Now, it should pass.
-        interpret(Teardown.file_cleanup)
+        with TemporaryDirectory() as tempdir:
+            with open(os.path.join(tempdir, 'temp.txt'), 'w') as fp:
+                fp.write('')
+            # Now, it should pass.
+            interpret(Teardown.file_cleanup)
         return
 
 
