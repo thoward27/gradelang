@@ -18,9 +18,9 @@ class Question:
     """ Question Snippets.
     # TODO: Reintegrate assume.
     """
-    empty = "question {}"
-    trivial_passing = "question { assert 1 == 1; }"
-    trivial_failing = "question { assert 0 == 1; }"
+    empty = "question \"empty\"{}"
+    trivial_passing = "question \"trivial_passing\" { assert 1 == 1; }"
+    trivial_failing = "question \"trivial_failing\"{ assert 0 == 1; }"
     testing_output = """
     question {
         run "echo hello world";
@@ -28,21 +28,21 @@ class Question:
     }
     """
     awarding_points = """
-    question { 
+    question \"awarding points\"{ 
         assert 1 == 1;
         award 10;
     }
     """
     testing_exit_success = """
-    question {
+    question \"exit success\"{
         run "echo hello world";
         assert exit successful;
     }
     """
     name_string = 'question "named" {}'
-    name_int = 'question 1 {}'
+    name_int = 'question 123 {}'
     string_generation = """
-    question {
+    question \"string\"{
         let x be String(minlen=10, maxlen=100);
         run "echo", x;
         assert x in stdout;
@@ -65,8 +65,6 @@ class Teardown:
 class Output:
     """ Output Snippets.
     """
-    # TODO: Tom's Job
-    # TODO: Default output mode.
     empty = "output {}"
     json = 'output { json; }'
     markdown = 'output { markdown; }'
@@ -88,6 +86,15 @@ class Program:
         Question.awarding_points,
         Teardown.empty,
         Output.empty
+    ])
+
+    output_json = '\n'.join([
+        Setup.trivial_passing,
+        Question.trivial_passing,
+        Question.trivial_failing,
+        Question.awarding_points,
+        Teardown.empty,
+        Output.json
     ])
 
     proposal = """

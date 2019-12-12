@@ -1,5 +1,6 @@
 import os
 import unittest
+from tempfile import TemporaryDirectory
 
 from gradelang.interpreter import *
 from .samples import *
@@ -22,7 +23,6 @@ class TestSetup(unittest.TestCase):
         self.assertTrue(state.setup)
         self.assertNotEqual((), state.setup)
 
-    @unittest.skip
     def test_required_files(self):
         interpret(Setup.required_files)
         return
@@ -69,6 +69,7 @@ class TestQuestion(unittest.TestCase):
 
     def test_award_points(self):
         interpret(Question.awarding_points)
+        self.assertEqual(10, state.score())
         return
 
 
@@ -85,15 +86,14 @@ class TestTeardown(unittest.TestCase):
         interpret(Teardown.trivial_failing)
         return
 
-    @unittest.skip
     def test_file_cleanup(self):
         # This should fail.
         interpret(Teardown.file_cleanup)
-        # TODO: Use tempfile
-        with open('temp.txt', 'w') as f:
-            f.write('')
-        # Now, it should pass.
-        interpret(Teardown.file_cleanup)
+        with TemporaryDirectory() as tempdir:
+            with open(os.path.join(tempdir, 'temp.txt'), 'w') as fp:
+                fp.write('')
+            # Now, it should pass.
+            interpret(Teardown.file_cleanup)
         return
 
 
@@ -123,14 +123,17 @@ class TestProgram(unittest.TestCase):
         interpret(Program.setup_failure)
         self.assertNotEqual((), state.setup)
         self.assertEqual(0, state.score())
-        self.assertTrue(all(isinstance(q.exception, AssertionError) for q in state.questions))
+        self.assertTrue(all(q.exception is not None for q in state.questions))
         return
 
-    @unittest.skip
     def test_proposal(self):
         interpret(Program.proposal)
         return
 
     def test_proposal_questions(self):
         interpret(Program.proposal_questions)
+        return
+
+    def test_output_json(self):
+        interpret(Program.output_json)
         return

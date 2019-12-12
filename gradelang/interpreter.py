@@ -1,6 +1,7 @@
 """ gradelang Interpreter.
 """
 import io
+import traceback
 from contextlib import redirect_stdout
 from functools import partial
 from multiprocessing.pool import Pool
@@ -21,8 +22,12 @@ def interpret(stream):
     with Pool() as p:
         state._questions = p.map(
             partial(worker, setup=state.setup, teardown=state.teardown), state.questions)
-    # TODO: OUTPUT
-    [print(q.report()) for q in state.questions]
+    if not state.output:
+        print(state.report())
+    elif 'json' in state.output:
+        print(state.json())
+    elif 'markdown' in state.output:
+        print(state.markdown())
     return
 
 
@@ -46,7 +51,8 @@ def worker(question: Question, setup, teardown):
             if teardown:
                 walk(teardown)
         except Exception as err:
-            question.exception = err
+            question.exception = repr(err)
+            question.traceback = traceback.format_exc()
         finally:
             question.output = output.getvalue()
             return question

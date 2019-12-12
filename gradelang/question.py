@@ -9,6 +9,7 @@ class Question:
         self.results = None
         self.output = None
         self.exception = None
+        self.traceback = None
         return
 
     def __eq__(self, other: 'Question') -> bool:
@@ -21,13 +22,28 @@ class Question:
         return f'{self.name}: [{self.body}]'
 
     def report(self):
-        return f'Question {self.name}: {self.value}.'
+        base = f'Question {self.name}: {self.score}/{self.max_score}.'
+        if self.exception:
+            base = '\n'.join([base, f'Exception thrown: {self.exception}\n{self.traceback}'])
+        if self.output:
+            base = '\n'.join([base, f'Output: {self.output}'])
+        return base
 
     def json(self):
-        pass
+        return {
+            'name': self.name,
+            'max_score': self.max_score,
+            'score': self.score,
+            'output': '\n'.join(filter(lambda x: x, [self.output, self.exception, self.traceback]))
+        }
 
     def markdown(self):
-        pass
+        return '\n'.join(filter(lambda x: x, [
+            f'### {self.name} {self.score}/{self.max_score}',
+            self.output,
+            self.exception,
+            self.traceback
+        ]))
 
     def award(self, points):
         self.value += points
@@ -35,3 +51,16 @@ class Question:
     @property
     def score(self):
         return self.value
+
+    @property
+    def max_score(self):
+
+        def find(node) -> int:
+            if node[0] == 'award':
+                return int(node[1])
+            elif node[0] == 'seq':
+                return find(node[1]) + find(node[2])
+            else:
+                return 0
+
+        return find(self.body)
