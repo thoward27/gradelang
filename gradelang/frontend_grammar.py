@@ -121,6 +121,8 @@ def p_stmt(p):
          | builtin exp
          | AWARD INTEGER
          | RUN param_list
+         | TOUCH STRING
+        | REMOVE STRING
     """
     if p[1] == 'let':
         p[0] = ('let', p[2], p[4], p[5])
@@ -147,7 +149,11 @@ def p_stmt(p):
         #    dict = TYPE_DICT[p[1]]
         #    state.symbol_table[p[2]] = dict
         #    p[0] = ('assign', p[1], p[2], p[4])
+    elif p[1] == 'touch':
+        p[0] = ('touch', p[2])
 
+    elif p[1] == 'remove':
+        p[0] = ('remove', p[2])
     else:
         raise ValueError(f"Unexpected symbol {p[1]}")
     return
@@ -205,8 +211,7 @@ def p_builtin(p):
     builtin : ASSERT
             | ASSUME
             | PRINT
-            | TOUCH
-            | REMOVE
+
     """
     p[0] = p[1]
     return

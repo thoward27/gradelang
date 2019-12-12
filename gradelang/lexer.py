@@ -22,8 +22,7 @@ builtins = {
     'successful': 'SUCCESSFUL',
     'failure': 'FAILURE',
     'run': 'RUN',
-    'touch': 'TOUCH',
-    'remove': "REMOVE"
+
 }
 
 blocks = {
@@ -38,6 +37,8 @@ stmts = {
     'award': 'AWARD',
     'in': 'IN',
     'be': 'BE',
+    'touch': 'TOUCH',
+    'remove': "REMOVE"
 }
 
 logical = {
