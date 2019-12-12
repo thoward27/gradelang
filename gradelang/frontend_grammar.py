@@ -3,7 +3,8 @@
 """
 from .lexer import *
 from .state import state
-#from .types import DICT as TYPE_DICT
+
+# from .types import DICT as TYPE_DICT
 
 #########################################################################
 # set precedence and associativity
@@ -51,7 +52,7 @@ def p_block(p):
         state.setup = p[3]
 
     elif p[1] == 'question':
-        #print("Question parsed:", p[2])
+        # print("Question parsed:", p[2])
         state.add_question(
             name=p[2],
             body=p[4]
@@ -61,7 +62,7 @@ def p_block(p):
         state.teardown = p[3]
 
     elif p[1] == 'output':
-        #print(state.output)
+        # print(state.output)
         pass
 
     else:
@@ -127,23 +128,22 @@ def p_stmt(p):
     elif p[1] == 'award':
         p[0] = ('award', p[2])
 
-    #elif p[1] in types.keys():
+    # elif p[1] in types.keys():
     #    #print(TYPE_DICT)
     #    dict = TYPE_DICT[p[1]]
     #    state.symbol_table[p[2]] = dict
     #    p[0] = ('assign', p[1], p[2], p[4])
-    
 
     elif p[1] in builtins.keys():
         p[0] = (p[1], p[2])
 
     elif p[1] == 'run':
         p[0] = ('run', p[2])
-        
+
     elif p[3] == '=':
         if p[1] == 'String' or p[1] == 'Int' or 'Float':
             p[0] = ('assign', p[1], p[2], p[4])
-        #elif p[1] in types.keys():
+        # elif p[1] in types.keys():
         #    dict = TYPE_DICT[p[1]]
         #    state.symbol_table[p[2]] = dict
         #    p[0] = ('assign', p[1], p[2], p[4])
@@ -151,7 +151,8 @@ def p_stmt(p):
     else:
         raise ValueError(f"Unexpected symbol {p[1]}")
     return
-    
+
+
 def p_opt_param_list(p):
     """
     opt_param_list : '(' param_list ')'
@@ -159,18 +160,20 @@ def p_opt_param_list(p):
     """
     if len(p) > 3:
         p[0] = p[2]
-    
+
+
 def p_param_list(p):
     """
     param_list : param ',' param_list
                | param
     """
-    #print("parsing paramlist", len(p), p)
+    # print("parsing paramlist", len(p), p)
     if len(p) == 4:
         p[0] = ("paramlist", p[1], p[3])
     else:
         p[0] = p[1]
-        
+
+
 def p_param(p):
     """
     param : exp
@@ -178,12 +181,13 @@ def p_param(p):
 
     """
     p[0] = p[1]
-    
+
+
 def p_param_assign(p):
     """
     param_assign : ID '=' exp
     """
-    p[0]= ("paramassign", p[1], p[3])
+    p[0] = ("paramassign", p[1], p[3])
 
 
 def p_type(p):
@@ -250,7 +254,8 @@ def p_integer_exp(p):
     """
     p[0] = ('integer', int(p[1]))
     return
-    
+
+
 def p_float_exp(p):
     """
     exp : FLOAT

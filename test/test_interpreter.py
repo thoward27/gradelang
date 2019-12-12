@@ -22,7 +22,6 @@ class TestSetup(unittest.TestCase):
         self.assertTrue(state.setup)
         self.assertNotEqual((), state.setup)
 
-    @unittest.skip
     def test_required_files(self):
         interpret(Setup.required_files)
         return
@@ -31,7 +30,6 @@ class TestSetup(unittest.TestCase):
         interpret(Setup.run)
         return
 
-    @unittest.skip
     def test_touch(self):
         interpret(Setup.touch)
         self.assertTrue(os.path.exists('temp.txt'))
@@ -87,7 +85,6 @@ class TestTeardown(unittest.TestCase):
         interpret(Teardown.trivial_failing)
         return
 
-    @unittest.skip
     def test_file_cleanup(self):
         # This should fail.
         interpret(Teardown.file_cleanup)
@@ -128,7 +125,6 @@ class TestProgram(unittest.TestCase):
         self.assertTrue(all(q.exception is not None for q in state.questions))
         return
 
-    @unittest.skip
     def test_proposal(self):
         interpret(Program.proposal)
         return

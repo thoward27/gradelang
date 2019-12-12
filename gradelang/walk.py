@@ -4,9 +4,10 @@
 from grade.pipeline import *
 from hypothesis.strategies import characters, floats, integers
 
-#from .types import Program
-
 from .state import state
+
+
+# from .types import Program
 
 
 # from .types import Program
@@ -19,32 +20,31 @@ def assign(ast):
         dict = {ast[2]: int(ast[3])}
     elif ast[1] == "Float":
         dict = {ast[2]: float(ast[3])}
-        
+
     state.symbol_table.update(dict)
 
+
 def walkParamList(ast, flat_list=[]):
-    
     flat_list.append(ast[1])
     if ast[2][0] == "paramlist":
 
-       walkParamList(ast[2], flat_list)
+        walkParamList(ast[2], flat_list)
     else:
 
-       flat_list.append(ast[2])
-       return flat_list
+        flat_list.append(ast[2])
+        return flat_list
 
 
 def getWalkedParamsAsListOfStrings(ast):
-
     walkable_params = walkParamList(ast, [])
-    
+
     params = []
     for node in walkable_params:
         params.append(str(walk(node)))
-            
+
     return params
-        
-    
+
+
 def run(ast):
     if ast[1][0] != "paramlist":
         state.question.results = Run(str(walk(ast[1])), shell=True)()
@@ -58,14 +58,14 @@ def run(ast):
 
 
 def let(ast):
-    #('let', ID, type, opt_param_list)
+    # ('let', ID, type, opt_param_list)
     params = ""
     if ast[3]:
         if ast[3][1] != "paramlist":
             params = str(walk(ast[3]))
         else:
             params = getWalkedParamsAsListOfStrings(ast[3])
-        
+
     if ast[2] == 'String':
         if params != "":
             new_string = characters(params)
@@ -87,8 +87,8 @@ def let(ast):
             new_float = floats()
         print("float", new_float)
         dict = {ast[1]: 7.0}
-    
-    print("dict", dict)    
+
+    print("dict", dict)
     state.symbol_table.update(dict)
 
 
@@ -110,7 +110,7 @@ dispatch = {
     'assert': lambda ast: _assert(ast[1]),
 
     # (RUN, STRING)
-    'run': run,#lambda ast: state.update_results(Run(ast[1], shell=True)()),
+    'run': run,  # lambda ast: state.update_results(Run(ast[1], shell=True)()),
 
     # (EXIT, code)
     'exit': lambda ast: (AssertExitSuccess() if ast[1] == 'successful' else AssertExitFailure())(state.question.results),
@@ -118,15 +118,14 @@ dispatch = {
     # (IN, exp, stream)
     'in': lambda ast: (AssertRegexStdout if ast[2] == 'stdout' else AssertRegexStderr)(pattern=str(walk(ast[1])))(
         state.question.results),
-    
-    #("not in", exp, stream)
-    #^((?!badword).)*$
+
+    # ("not in", exp, stream)
+    # ^((?!badword).)*$
     'notin': lambda ast: (AssertRegexStdout if ast[2] == 'stdout' else AssertRegexStderr)(
         pattern="^((?!" + str(walk(ast[1])) + ").)*$")(state.question.results),
 
-
     # (ASSIGN, type, id, exp)
-    #'assign': lambda ast: state.symbol_table.update({ast[2]: state.symbol_table[ast[2]](walk(ast[3]))}),
+    # 'assign': lambda ast: state.symbol_table.update({ast[2]: state.symbol_table[ast[2]](walk(ast[3]))}),
     'assign': assign,
 
     # (INT, value)
@@ -134,7 +133,7 @@ dispatch = {
 
     # (STRING, value)
     'string': lambda ast: ast[1],
-    
+
     # (PARAM_ASSIGN, ID, exp)
     'paramassign': lambda ast: walk(ast[2]),
 
@@ -176,12 +175,12 @@ dispatch = {
 
     # (GT, exp, exp)
     '>': lambda ast: int(walk(ast[1])) > int(walk(ast[2])),
-    
-    #('award', INTEGER)
+
+    # ('award', INTEGER)
     'award': lambda ast: state.question.award(int(ast[1])),
 
-    #('let', ID, type, opt_param_list)
-    'let': let,    
+    # ('let', ID, type, opt_param_list)
+    'let': let,
 }
 
 
@@ -190,5 +189,3 @@ def walk(ast) -> str:
     if action in dispatch:
         return dispatch[action](ast)
     raise ValueError(f"Unknown node: {ast}")
-    
-
