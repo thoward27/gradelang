@@ -125,7 +125,7 @@ class TestProgram(unittest.TestCase):
         interpret(Program.setup_failure)
         self.assertNotEqual((), state.setup)
         self.assertEqual(0, state.score())
-        self.assertTrue(all(isinstance(q.exception, AssertionError) for q in state.questions))
+        self.assertTrue(all(q.exception is not None for q in state.questions))
         return
 
     @unittest.skip

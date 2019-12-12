@@ -34,10 +34,16 @@ class Question:
             'name': self.name,
             'max_score': self.max_score,
             'score': self.score,
+            'output': '\n'.join(filter(lambda x: x, [self.output, self.exception, self.traceback]))
         }
 
     def markdown(self):
-        pass
+        return '\n'.join(filter(lambda x: x, [
+            f'### {self.name} {self.score}/{self.max_score}',
+            self.output,
+            self.exception,
+            self.traceback
+        ]))
 
     def award(self, points):
         self.value += points

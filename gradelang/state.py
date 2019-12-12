@@ -47,5 +47,22 @@ class State:
     def score(self):
         return sum(q.score for q in self.questions)
 
+    def max_score(self):
+        return sum(q.max_score for q in self.questions)
+
+    @property
+    def json(self):
+        return {
+            'tests': [q.json for q in self.questions]
+        }
+
+    @property
+    def markdown(self):
+        return '\n'.join(filter(lambda x: x, [
+            '# Results',
+            f'## Score: {self.score()}/{self.max_score()}',
+            *[q.markdown for q in self.questions]
+        ]))
+
 
 state = State()

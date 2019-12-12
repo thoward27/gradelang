@@ -65,8 +65,6 @@ class Teardown:
 class Output:
     """ Output Snippets.
     """
-    # TODO: Tom's Job
-    # TODO: Default output mode.
     empty = "output {}"
     json = 'output { json; }'
     markdown = 'output { markdown; }'
