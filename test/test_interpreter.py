@@ -70,6 +70,7 @@ class TestQuestion(unittest.TestCase):
 
     def test_award_points(self):
         interpret(Question.awarding_points)
+        self.assertEqual(10, state.score())
         return
 
 
