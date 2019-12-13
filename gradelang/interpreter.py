@@ -67,4 +67,5 @@ def worker(question: Question, setup: tuple, teardown: tuple) -> Question:
             question.traceback = traceback.format_exc()
         finally:
             question.output = output.getvalue()
+            question.workdir.cleanup()
             return question

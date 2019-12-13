@@ -1,3 +1,5 @@
+from functools import cached_property
+from tempfile import TemporaryDirectory
 from typing import Union
 
 
@@ -10,6 +12,7 @@ class Question:
         self.output = None
         self.exception = None
         self.traceback = None
+        self._workdir = None
         return
 
     def __eq__(self, other: 'Question') -> bool:
@@ -20,6 +23,10 @@ class Question:
 
     def __repr__(self) -> str:
         return f'{self.name}: [{self.body}]'
+
+    @cached_property
+    def workdir(self):
+        return TemporaryDirectory(prefix=f'{self.name}-')
 
     def report(self):
         base = f'Question {self.name}: {self.score}/{self.max_score}.'

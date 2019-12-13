@@ -100,22 +100,20 @@ class Program:
 
     proposal = """
         setup {
-            touch "temp.txt";
+            touch "@/temp.txt";
             run "echo";
             assert exit successful;
         }
 
         teardown {
-            remove "temp.txt";
+            remove "@/temp.txt";
         }
 
         output {
             json;
         }
 
-        output {
-        }
-            question 1 {
+        question 1 {
             # Run the program, saving output.
             run "echo", "hello world";
 
@@ -159,17 +157,8 @@ class Program:
             award 50;
         }
         """
-        
+
     proposal_questions = """
-        setup {
-        }
-
-        teardown {
-        }
-
-        output {
-        }
-        
         question 1 {
             # Run the program, saving output.
             run "echo", "hello world";

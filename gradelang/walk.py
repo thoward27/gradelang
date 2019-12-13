@@ -21,22 +21,19 @@ def assign(ast):
     state.symbol_table.update(dict)
 
 
-def walkParamList(ast, flat_list=[]):
+def walk_param_list(ast, flat_list=[]):
     flat_list.append(ast[1])
     if ast[2][0] == "paramlist":
 
-        walkParamList(ast[2], flat_list)
+        walk_param_list(ast[2], flat_list)
     else:
 
         flat_list.append(ast[2])
         return flat_list
 
 
-
-def getWalkedParamsAsList(ast):
-
-    walkable_params = walkParamList(ast, [])
-
+def get_walked_params_as_list(ast):
+    walkable_params = walk_param_list(ast, [])
     params = []
     for node in walkable_params:
         params.append(walk(node))
@@ -46,16 +43,13 @@ def getWalkedParamsAsList(ast):
 
 def run(ast):
     if ast[1][0] != "paramlist":
-        state.question.results = Run(str(walk(ast[1])), shell=True)()
-        # state.update_results(Run(str(walk(ast[1])), shell=True)())
+        state.question.results = Run(__safe_path(str(walk(ast[1]))), shell=True)()
     else:
-        params = getWalkedParamsAsList(ast[1])
+        params = get_walked_params_as_list(ast[1])
 
-        params = [str(i) for i in params]
+        params = [__safe_path(str(i)) for i in params]
 
-        print("run params: ", params)
         state.question.results = Run(params)()
-        # state.update_results(Run(params, shell=True)())
 
 
 def let(ast):
@@ -65,31 +59,27 @@ def let(ast):
         if ast[3][1] != "paramlist":
             params = walk(ast[3])
         else:
-            params = getWalkedParamsAsList(ast[3])
+            params = get_walked_params_as_list(ast[3])
 
     if ast[2] == 'String':
         if params != "":
             new_string = characters(params)
         else:
             new_string = characters()
-        #print("string", new_string)
         dict = {ast[1]: new_string.example()}
     elif ast[2] == 'Int':
         if params != "":
             new_int = integers(params)
         else:
             new_int = integers()
-        #print("int", new_int)
         dict = {ast[1]: new_int.example()}
-    if ast[2] == "Float":
+    elif ast[2] == "Float":
         if params != "":
             new_float = floats(params)
         else:
             new_float = floats()
-        #print("float", new_float.example())
         dict = {ast[1]: new_float.example()}
 
-    #print("dict", dict)
     state.symbol_table.update(dict)
 
 
@@ -106,6 +96,31 @@ def __assert(cond: bool, message: str = None):
     return
 
 
+def __safe_path(p: str):
+    return p.replace('@/', state.question.workdir.name)
+
+
+# TODO: Migrate these to grade.
+class AssertInStdout:
+    def __init__(self, string: str):
+        self.string = string
+
+    def __call__(self, results):
+        if self.string not in results.stdout:
+            raise AssertionError(f'{self.string} not in {results.stdout}')
+        return results
+
+
+class AssertInStderr:
+    def __init__(self, string: str):
+        self.string = string
+
+    def __call__(self, results):
+        if self.string not in results.stderr:
+            raise AssertionError(f'{self.string} not in {results.stderr}')
+        return results
+
+
 dispatch = {
     # (SEQ, stmt, stmt_list)
     'seq': lambda ast: (walk(ast[1]), walk(ast[2])),
@@ -120,20 +135,23 @@ dispatch = {
     'run': run,  # lambda ast: state.update_results(Run(ast[1], shell=True)()),
 
     # (TOUCH, STRING)
-    'touch': lambda ast: Path(ast[1]).touch(),
+    'touch': lambda ast: Path(__safe_path(ast[1])).touch(),
 
     # (REMOVE, STRING)
-    'remove': lambda ast: (os.remove(ast[1])),
+    'remove': lambda ast: (os.remove(__safe_path(ast[1]))),
 
     # (REQUIRE, STRING, string_list)
     'require': lambda ast: [__assert(os.path.exists(p), f'{p} does not exist!') for p in [ast[1], *ast[2]] if p != NIL],
 
     # (EXIT, code)
-    'exit': lambda ast: (AssertExitSuccess() if ast[1] == 'successful' else AssertExitFailure())(state.question.results),
+    'exit': lambda ast: (
+        AssertExitSuccess() if ast[1] == 'successful' else AssertExitFailure())
+    (state.question.results),
 
     # (IN, exp, stream)
-    'in': lambda ast: (AssertRegexStdout if ast[2] == 'stdout' else AssertRegexStderr)(pattern=str(walk(ast[1])))(
-        state.question.results),
+    'in': lambda ast: (
+        AssertInStdout if ast[2] == 'stdout' else AssertInStderr
+    )(string=str(walk(ast[1])))(state.question.results),
 
     # ("not in", exp, stream)
     # ^((?!badword).)*$

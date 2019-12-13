@@ -80,15 +80,6 @@ class TestQuestion(unittest.TestCase):
         interpret(Question.testing_exit_success)
         return
 
-    def test_program_exit_specific(self):
-        interpret("""
-        question {
-            run "echo", "hello world";
-            assert exit 0;
-        }
-        """)
-        return
-
     def test_program_output(self):
         interpret(Question.testing_output)
         return
@@ -207,10 +198,13 @@ class TestProgram(unittest.TestCase):
 
     def test_proposal(self):
         interpret(Program.proposal)
+        self.assertFalse([q.exception for q in state.questions if q.exception])
+        self.assertEqual(80, state.score())
         return
 
     def test_proposal_questions(self):
         interpret(Program.proposal_questions)
+        self.assertEqual(80, state.score())
         return
 
     def test_output_json(self):

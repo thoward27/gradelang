@@ -275,8 +275,8 @@ def p_exit_status(p):
     """
     exit_status : SUCCESSFUL
                 | FAILURE
-                | INTEGER
     """
+    # TODO: Include integers.
     p[0] = p[1]
     return
 

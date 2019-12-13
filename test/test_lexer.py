@@ -34,7 +34,7 @@ class TestLexer(unittest.TestCase):
         lexer.input("# Commenting!")
         self.assertEqual(lexer.token(), None)
         return
-        
+
     def test_strings(self):
         lexer.input(""""String"exit"string 2\"""")
         self.assertEqual(lexer.token().type, 'STRING')
