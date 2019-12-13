@@ -2,7 +2,7 @@
 """
 
 from grade.pipeline import *
-#from hypothesis.strategies import characters, floats, integers
+from hypothesis.strategies import characters, floats, integers
 import os
 
 from .state import state
@@ -44,7 +44,7 @@ def getWalkedParamsAsList(ast):
     params = []
     for node in walkable_params:
         params.append(walk(node))
-            
+
     return params
 
 
@@ -54,7 +54,7 @@ def run(ast):
         # state.update_results(Run(str(walk(ast[1])), shell=True)())
     else:
         params = getWalkedParamsAsList(ast[1])
-        
+
         params = [str(i) for i in params]
 
         print("run params: ", params)
@@ -70,7 +70,7 @@ def let(ast):
             params = walk(ast[3])
         else:
             params = getWalkedParamsAsList(ast[3])
-        
+
     if ast[2] == 'String':
         if params != "":
             new_string = characters(params)
@@ -114,6 +114,9 @@ dispatch = {
     # (ASSERT, exp)
     'assert': lambda ast: _assert(ast[1]),
 
+    # (RUN, STRING)
+    'run': run,  # lambda ast: state.update_results(Run(ast[1], shell=True)()),
+
     # (TOUCH, STRING)
     'touch': lambda ast: (open(ast[1], "w+")),
 
@@ -121,12 +124,8 @@ dispatch = {
 
     'remove': lambda ast: (os.remove(ast[1])),
 
-    # (RUN, STRING)
-    'run': run,  # lambda ast: state.update_results(Run(ast[1], shell=True)()),
-
     # (EXIT, code)
-    'exit': lambda ast: (AssertExitSuccess() if ast[1] == 'successful' else AssertExitFailure())(
-        state.question.results),
+    'exit': lambda ast: (AssertExitSuccess() if ast[1] == 'successful' else AssertExitFailure())(state.question.results),
 
     # (IN, exp, stream)
     'in': lambda ast: (AssertRegexStdout if ast[2] == 'stdout' else AssertRegexStderr)(pattern=str(walk(ast[1])))(
