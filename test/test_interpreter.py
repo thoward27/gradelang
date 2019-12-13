@@ -32,8 +32,17 @@ class TestSetup(unittest.TestCase):
         return
 
     def test_touch(self):
-        interpret(Setup.touch)
-        self.assertTrue(os.path.exists('temp.txt'))
+        with TemporaryDirectory() as fd:
+            # Prevent accidental collisions
+            path = os.path.join(fd, 'temp.txt')
+
+            # This shouldn't do anything, since there's no question to execute.
+            interpret(f'setup {{ touch "{path}"; }}')
+            self.assertFalse(os.path.exists(path))
+
+            # Now, this should create the file.
+            interpret('\n'.join([f'setup {{ touch "{path}"; }}', Question.trivial_passing]))
+            self.assertTrue(os.path.exists(path))
         return
 
 

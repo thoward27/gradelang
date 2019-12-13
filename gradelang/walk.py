@@ -1,9 +1,10 @@
 """ gradelang Tree Walker.
 """
+import os
+from pathlib import Path
 
 from grade.pipeline import *
 from hypothesis.strategies import characters, floats, integers
-import os
 
 from .state import state
 
@@ -118,7 +119,7 @@ dispatch = {
     'run': run,  # lambda ast: state.update_results(Run(ast[1], shell=True)()),
 
     # (TOUCH, STRING)
-    'touch': lambda ast: (open(ast[1], "w+")),
+    'touch': lambda ast: Path(ast[1]).touch(),
 
     # (REMOVE, STRING)
     'remove': lambda ast: (os.remove(ast[1])),

@@ -12,16 +12,20 @@ from .state import state
 from .walk import walk
 
 
-def interpret(stream):
+def interpret(stream) -> None:
+    """ Interprets the given stream. """
     # reset the state object
     state.clean()
 
     # build the AST
     parser.parse(stream, lexer=lexer)
 
+    # Execute Questions.
+    _worker = partial(worker, setup=state.setup, teardown=state.teardown)
     with Pool() as p:
-        state._questions = p.map(
-            partial(worker, setup=state.setup, teardown=state.teardown), state.questions)
+        state._questions = p.map(_worker, state.questions)
+
+    # Generate Output.
     if not state.output:
         print(state.report())
     elif 'json' in state.output:
@@ -31,7 +35,7 @@ def interpret(stream):
     return
 
 
-def worker(question: Question, setup, teardown):
+def worker(question: Question, setup: tuple, teardown: tuple) -> Question:
     """ Worker Process for questions.
 
     Passing setup and teardown explicitly because Windows uses `spawn` instead
