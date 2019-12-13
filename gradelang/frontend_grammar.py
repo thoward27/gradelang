@@ -157,12 +157,10 @@ def p_stmt(p):
         p[0] = ('remove', p[2])
 
     elif p[3] == '=':
-        if p[1] == 'String' or p[1] == 'Int' or 'Float':
+        if p[1] == 'String' or p[1] == 'Int' or p[1] == 'Float':
             p[0] = ('assign', p[1], p[2], p[4])
-        # elif p[1] in types.keys():
-        #    dict = TYPE_DICT[p[1]]
-        #    state.symbol_table[p[2]] = dict
-        #    p[0] = ('assign', p[1], p[2], p[4])
+        else:
+            raise ValueError(f'Unexpected type {p[1]}')
     else:
         raise ValueError(f"Unexpected symbol {p[1]}")
     return
@@ -194,7 +192,6 @@ def p_param_list(p):
     param_list : param ',' param_list
                | param
     """
-    # print("parsing paramlist", len(p), p)
     if len(p) == 4:
         p[0] = ("paramlist", p[1], p[3])
     else:
