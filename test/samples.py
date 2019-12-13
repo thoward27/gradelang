@@ -147,7 +147,7 @@ class Program:
             assert "fish" in stdout;
             
             let z be String();
-            run "echo", z;
+            run "printf", z;
             assert z in stdout;
             
             let camel be Int(min_value=6);
@@ -193,7 +193,7 @@ class Program:
             assert "fish" in stdout;
             
             let z be String();
-            run "echo", z;
+            run "printf", z;
             assert z in stdout;
             
             let camel be Int(min_value=6);
