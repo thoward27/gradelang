@@ -10,15 +10,15 @@ from .state import state, NIL
 
 
 def assign(ast):
-    dict = {}
+    elem = {}
     if ast[1] == 'String':
-        dict = {ast[2]: str(ast[3])}
+        elem = {ast[2]: str(ast[3])}
     elif ast[1] == 'Int':
-        dict = {ast[2]: int(ast[3])}
+        elem = {ast[2]: int(ast[3])}
     elif ast[1] == "Float":
-        dict = {ast[2]: float(ast[3])}
+        elem = {ast[2]: float(ast[3])}
 
-    state.symbol_table.update(dict)
+    state.symbol_table.update(elem)
 
 
 def walk_param_list(ast, flat_list=[]):
