@@ -40,6 +40,7 @@ class TestSetup(unittest.TestCase):
         parser.parse(samples.Setup.touch)
         return
 
+
 class TestQuestion(unittest.TestCase):
     def setUp(self) -> None:
         state.clean()
@@ -70,11 +71,11 @@ class TestQuestion(unittest.TestCase):
         return
 
 
-class TestSave(unittest.TestCase):
+class TestOutput(unittest.TestCase):
     def test_empty(self):
         parser.parse(samples.Output.empty)
         self.assertEqual(
-            [],
+            {('nil',): ''},
             state.output
         )
         return
@@ -100,7 +101,7 @@ class TestProgram(unittest.TestCase):
             state.teardown
         )
         self.assertEqual(
-            [],
+            {('nil',): ''},
             state.output
         )
         return

@@ -26,12 +26,24 @@ def interpret(stream) -> None:
         state._questions = p.map(_worker, state.questions)
 
     # Generate Output.
-    if not state.output:
+    if 'json' in state.output:
+        f = state.output['json']
+        if f != ('nil',):
+            with open(f, 'w') as fp:
+                fp.write(state.json())
+        else:
+            print(state.json())
+
+    if 'markdown' in state.output:
+        f = state.output['markdown']
+        if f != ('nil',):
+            with open(f, 'w') as fp:
+                fp.write(state.markdown())
+        else:
+            print(state.markdown())
+
+    if ('nil',) in state.output:
         print(state.report())
-    elif 'json' in state.output:
-        print(state.json())
-    elif 'markdown' in state.output:
-        print(state.markdown())
     return
 
 

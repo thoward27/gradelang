@@ -1,3 +1,4 @@
+import json
 import os
 import unittest
 from tempfile import TemporaryDirectory
@@ -115,15 +116,60 @@ class TestTeardown(unittest.TestCase):
 
 class TestOutput(unittest.TestCase):
     def test_empty(self):
-        interpret(Output.empty)
+        interpret('\n'.join([Output.empty, Question.trivial_passing]))
+        self.assertEqual(
+            {('nil',): ''},
+            state.output
+        )
         return
 
     def test_json(self):
-        interpret(Output.json)
+        interpret('\n'.join([Output.json, Question.trivial_passing]))
+        self.assertEqual(
+            {'json': ('nil',)},
+            state.output
+        )
         return
 
     def test_markdown(self):
-        interpret(Output.markdown)
+        interpret('\n'.join([Output.markdown, Question.trivial_passing]))
+        self.assertEqual(
+            {'markdown': ('nil',)},
+            state.output
+        )
+        return
+
+    def test_multiple(self):
+        interpret("""
+        output { 
+            json;
+            markdown;
+        }
+        question {}
+        """)
+        self.assertEqual(
+            {'markdown': ('nil',), 'json': ('nil',)},
+            state.output
+        )
+        return
+
+    def test_filenames(self):
+        with TemporaryDirectory() as d:
+            path = os.path.join(d, 'results.json')
+            interpret("""
+            output {
+                json "%s";
+            }
+            question {}
+            """ % path)
+            self.assertEqual(
+                {'json': path},
+                state.output
+            )
+            # Ensure that the json does, in-fact, load back up successfully.
+            with open(path, 'r') as f:
+                result = json.load(f)
+                self.assertIsInstance(result, dict)
         return
 
 

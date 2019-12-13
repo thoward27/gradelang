@@ -29,15 +29,11 @@ def p_prog(_):
     return
 
 
-def p_block_list(p):
+def p_block_list(_):
     """
     block_list : block block_list
                | empty
     """
-    if len(p) == 3:
-        p[0] = ('blocks', p[1], p[2])
-    elif len(p) == 2:
-        p[0] = p[1]
     return
 
 
@@ -62,15 +58,14 @@ def p_block(p):
         state.teardown = p[3]
 
     elif p[1] == 'output':
-        # print(state.output)
-        pass
+        state.output = p[3]
 
     else:
         raise ValueError(f'Unexpected block: {p[1]}')
     return
 
 
-def p_name(p):
+def p_opt_name(p):
     """
     opt_name : INTEGER
          | STRING
@@ -86,14 +81,26 @@ def p_format_list(p):
                | empty
     """
     if len(p) >= 3:
-        state.output.append(p[1])
+        # If we have at least one format, filter out the empty tag.
+        p[0] = {**p[1], **{fmt: file for fmt, file in p[3].items() if fmt != ('nil',)}}
+    elif len(p) == 2:
+        p[0] = {p[1]: ''}
     return
 
 
 def p_output_format(p):
     """
-    output_format : JSON
-                  | MARKDOWN
+    output_format : JSON opt_string
+                  | MARKDOWN opt_string
+    """
+    p[0] = {p[1]: p[2]}
+    return
+
+
+def p_opt_string(p):
+    """
+    opt_string : STRING
+               | empty
     """
     p[0] = p[1]
     return
