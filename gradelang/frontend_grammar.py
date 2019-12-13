@@ -142,6 +142,12 @@ def p_stmt(p):
     elif p[1] == 'run':
         p[0] = ('run', p[2])
 
+    elif p[1] == 'touch':
+        p[0] = ('touch', p[2])
+
+    elif p[1] == 'remove':
+        p[0] = ('remove', p[2])
+
     elif p[3] == '=':
         if p[1] == 'String' or p[1] == 'Int' or 'Float':
             p[0] = ('assign', p[1], p[2], p[4])
@@ -149,11 +155,6 @@ def p_stmt(p):
         #    dict = TYPE_DICT[p[1]]
         #    state.symbol_table[p[2]] = dict
         #    p[0] = ('assign', p[1], p[2], p[4])
-    elif p[1] == 'touch':
-        p[0] = ('touch', p[2])
-
-    elif p[1] == 'remove':
-        p[0] = ('remove', p[2])
     else:
         raise ValueError(f"Unexpected symbol {p[1]}")
     return

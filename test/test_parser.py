@@ -38,9 +38,6 @@ class TestSetup(unittest.TestCase):
 
     def test_touch(self):
         parser.parse(samples.Setup.touch)
-        self.assertEqual(
-            ('seq', ('touch', ('string', "./temp.txt")),('nil',)),state.setup
-                         )
         return
 
 class TestQuestion(unittest.TestCase):
