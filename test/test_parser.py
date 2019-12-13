@@ -36,6 +36,9 @@ class TestSetup(unittest.TestCase):
         parser.parse(samples.Setup.run)
         return
 
+    def test_touch(self):
+        parser.parse(samples.Setup.touch)
+        return
 
 class TestQuestion(unittest.TestCase):
     def setUp(self) -> None:

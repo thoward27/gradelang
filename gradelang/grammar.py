@@ -40,6 +40,8 @@ def p_grammar(_):
          | builtin exp
          | AWARD INTEGER
          | RUN STRING
+         | TOUCH STRING
+         | REMOVE STRING
 
     type : STRING_TYPE
          | PROGRAM_TYPE
