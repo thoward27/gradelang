@@ -10,25 +10,32 @@ class TestSetup(unittest.TestCase):
 
     def test_empty(self):
         """ Ensure default value of setup. """
-        interpret(Setup.empty)
+        interpret('\n'.join([Setup.empty, Question.trivial_passing]))
         return
 
     def test_trivial_passing(self):
         """ Ensure that a simple setup is saved to state. """
-        interpret(Setup.trivial_passing)
+        interpret('\n'.join([Setup.trivial_passing, Question.trivial_passing]))
         return
 
     def test_trivial_failing(self):
-        interpret(Setup.trivial_failing)
+        interpret('\n'.join([Setup.trivial_failing, Question.trivial_passing]))
         self.assertTrue(state.setup)
         self.assertNotEqual((), state.setup)
+        return
 
     def test_required_files(self):
-        interpret(Setup.required_files)
+        interpret('\n'.join([Setup.required_files_exist, Question.awarding_points]))
+        self.assertGreater(state.score(), 0)
+        return
+
+    def test_required_files_missing(self):
+        interpret('\n'.join([Setup.required_files_missing, Question.awarding_points]))
+        self.assertEqual(state.score(), 0)
         return
 
     def test_run(self):
-        interpret(Setup.run)
+        interpret('\n'.join([Setup.run, Question.trivial_passing]))
         return
 
     def test_touch(self):

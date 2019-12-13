@@ -8,7 +8,8 @@ class Setup:
     empty = "setup {}"
     trivial_passing = "setup { assert 1 == 1; }"
     trivial_failing = "setup { assert 1 == 0; }"
-    required_files = 'setup { assert "./README.md" exists }'
+    required_files_exist = 'setup { require "./README.md"; }'
+    required_files_missing = 'setup { require "./not-a-file-no-way-no-how.imaginary"; }'
     # TODO: This should be moved to a global setup.
     run = 'setup { run "echo", "Hello world"; }'
     touch = 'setup { touch "./temp.txt"; }'

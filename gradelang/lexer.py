@@ -22,7 +22,7 @@ builtins = {
     'successful': 'SUCCESSFUL',
     'failure': 'FAILURE',
     'run': 'RUN',
-
+    'require': 'REQUIRE'
 }
 
 blocks = {
@@ -83,12 +83,6 @@ t_LE = r'<='
 t_LT = r'<'
 t_GE = r'>='
 t_GT = r'>'
-
-
-# Logical
-# t_AND = r'\&'
-# t_OR = r'\|'
-# t_NOT = r'not'
 
 
 def t_FLOAT(t):

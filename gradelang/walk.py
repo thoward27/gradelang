@@ -105,6 +105,12 @@ def _assert(ast):
     return result
 
 
+def __assert(cond: bool, message: str = None):
+    if not cond:
+        raise AssertionError(message)
+    return
+
+
 dispatch = {
     # (SEQ, stmt, stmt_list)
     'seq': lambda ast: (walk(ast[1]), walk(ast[2])),
@@ -123,6 +129,9 @@ dispatch = {
 
     # (REMOVE, STRING)
     'remove': lambda ast: (os.remove(ast[1])),
+
+    # (REQUIRE, STRING, string_list)
+    'require': lambda ast: [__assert(os.path.exists(p), f'{p} does not exist!') for p in [ast[1], *ast[2]] if p != ('nil',)],
 
     # (EXIT, code)
     'exit': lambda ast: (AssertExitSuccess() if ast[1] == 'successful' else AssertExitFailure())(state.question.results),

@@ -121,14 +121,18 @@ def p_stmt(p):
          | builtin exp
          | AWARD INTEGER
          | RUN param_list
+         | REQUIRE STRING string_list
          | TOUCH STRING
-        | REMOVE STRING
+         | REMOVE STRING
     """
     if p[1] == 'let':
         p[0] = ('let', p[2], p[4], p[5])
 
     elif p[1] == 'award':
         p[0] = ('award', p[2])
+
+    elif p[1] == 'require':
+        p[0] = ('require', p[2], p[3])
 
     # elif p[1] in types.keys():
     #    #print(TYPE_DICT)
@@ -157,6 +161,18 @@ def p_stmt(p):
         #    p[0] = ('assign', p[1], p[2], p[4])
     else:
         raise ValueError(f"Unexpected symbol {p[1]}")
+    return
+
+
+def p_string_list(p):
+    """
+    string_list : ',' STRING string_list
+                | empty
+    """
+    if len(p) == 4:
+        p[0] = (p[2], *p[3])
+    else:
+        p[0] = (p[1],)
     return
 
 
@@ -212,7 +228,6 @@ def p_builtin(p):
     builtin : ASSERT
             | ASSUME
             | PRINT
-
     """
     p[0] = p[1]
     return
