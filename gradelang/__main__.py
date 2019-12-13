@@ -6,13 +6,9 @@ from .interpreter import interpret
 
 
 @click.command()
-@click.argument('stream')
-@click.option('--cmd/--no-cmd', default=False, help='Stream is a command, not a file.')
-def cli(stream, cmd):
-    if not cmd:
-        with open(stream, 'r') as f:
-            stream = f.read()
-
+@click.argument('file', type=click.File('r'))
+def cli(file):
+    stream = file.read()
     interpret(stream)
     return
 
