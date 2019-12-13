@@ -121,7 +121,6 @@ dispatch = {
     'touch': lambda ast: (open(ast[1], "w+")),
 
     # (REMOVE, STRING)
-
     'remove': lambda ast: (os.remove(ast[1])),
 
     # (EXIT, code)
