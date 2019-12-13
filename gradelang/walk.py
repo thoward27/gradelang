@@ -2,7 +2,8 @@
 """
 
 from grade.pipeline import *
-from hypothesis.strategies import characters, floats, integers
+#from hypothesis.strategies import characters, floats, integers
+import os
 
 from .state import state
 
