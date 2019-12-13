@@ -2,9 +2,7 @@
 # TODO Pull lexer tokens in?
 """
 from .lexer import *
-from .state import state
-
-# from .types import DICT as TYPE_DICT
+from .state import state, NIL
 
 #########################################################################
 # set precedence and associativity
@@ -48,11 +46,7 @@ def p_block(p):
         state.setup = p[3]
 
     elif p[1] == 'question':
-        # print("Question parsed:", p[2])
-        state.add_question(
-            name=p[2],
-            body=p[4]
-        )
+        state.add_question(name=p[2], body=p[4])
 
     elif p[1] == 'teardown':
         state.teardown = p[3]
@@ -81,8 +75,11 @@ def p_format_list(p):
                | empty
     """
     if len(p) >= 3:
-        # If we have at least one format, filter out the empty tag.
-        p[0] = {**p[1], **{fmt: file for fmt, file in p[3].items() if fmt != ('nil',)}}
+        # If we have at least one format, filter out the empty tag,
+        # we do this, because presence of the empty tag will cause
+        # the output of the default report format, regardless of
+        # user-specified choices.
+        p[0] = {**p[1], **{fmt: file for fmt, file in p[3].items() if fmt != NIL}}
     elif len(p) == 2:
         p[0] = {p[1]: ''}
     return
@@ -125,12 +122,12 @@ def p_stmt(p):
          | String ID '=' STRING
          | Int ID '=' INTEGER
          | Float ID '=' FLOAT
-         | builtin exp
          | AWARD INTEGER
          | RUN param_list
          | REQUIRE STRING string_list
          | TOUCH STRING
          | REMOVE STRING
+         | builtin exp
     """
     if p[1] == 'let':
         p[0] = ('let', p[2], p[4], p[5])
@@ -233,7 +230,6 @@ def p_type(p):
 def p_builtin(p):
     """
     builtin : ASSERT
-            | ASSUME
             | PRINT
     """
     p[0] = p[1]
@@ -260,21 +256,28 @@ def p_binop_exp(p):
 
 def p_bool_exp(p):
     """
-    exp : EXIT SUCCESSFUL
-        | EXIT FAILURE
+    exp : EXIT exit_status
         | exp IN STDOUT
         | exp IN STDERR
         | exp NOT IN STDOUT
         | exp NOT IN STDERR
-        
     """
-    # TODO: Should this be called exited?
     if p[1] == 'exit':
         p[0] = ('exit', p[2])
     elif p[2] == 'in':
         p[0] = ('in', p[1], p[3])
     elif p[3] == 'in':
         p[0] = ('notin', p[1], p[3])
+    return
+
+
+def p_exit_status(p):
+    """
+    exit_status : SUCCESSFUL
+                | FAILURE
+                | INTEGER
+    """
+    p[0] = p[1]
     return
 
 
@@ -336,7 +339,7 @@ def p_empty(p):
     """
     empty :
     """
-    p[0] = ('nil',)
+    p[0] = NIL
 
 
 def p_error(t):

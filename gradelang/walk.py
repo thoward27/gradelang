@@ -6,13 +6,8 @@ from pathlib import Path
 from grade.pipeline import *
 from hypothesis.strategies import characters, floats, integers
 
-from .state import state
+from .state import state, NIL
 
-
-# from .types import Program
-
-
-# from .types import Program
 
 def assign(ast):
     dict = {}
@@ -131,7 +126,7 @@ dispatch = {
     'remove': lambda ast: (os.remove(ast[1])),
 
     # (REQUIRE, STRING, string_list)
-    'require': lambda ast: [__assert(os.path.exists(p), f'{p} does not exist!') for p in [ast[1], *ast[2]] if p != ('nil',)],
+    'require': lambda ast: [__assert(os.path.exists(p), f'{p} does not exist!') for p in [ast[1], *ast[2]] if p != NIL],
 
     # (EXIT, code)
     'exit': lambda ast: (AssertExitSuccess() if ast[1] == 'successful' else AssertExitFailure())(state.question.results),

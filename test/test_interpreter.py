@@ -80,6 +80,15 @@ class TestQuestion(unittest.TestCase):
         interpret(Question.testing_exit_success)
         return
 
+    def test_program_exit_specific(self):
+        interpret("""
+        question {
+            run "echo", "hello world";
+            assert exit 0;
+        }
+        """)
+        return
+
     def test_program_output(self):
         interpret(Question.testing_output)
         return
@@ -115,6 +124,14 @@ class TestTeardown(unittest.TestCase):
 
 
 class TestOutput(unittest.TestCase):
+    def test_none(self):
+        interpret("")
+        self.assertEqual(
+            {('nil',): ''},
+            state.output
+        )
+        return
+
     def test_empty(self):
         interpret('\n'.join([Output.empty, Question.trivial_passing]))
         self.assertEqual(

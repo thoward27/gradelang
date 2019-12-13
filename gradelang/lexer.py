@@ -1,30 +1,26 @@
 """ gradelang Lexer.
 """
 
+# Builtin types, all supporting automated generation.
 types = {
     'String': 'String',
     'Int': 'Int',
     'Float': 'Float',
 }
 
+# Supported output formats.
 outputs = {
     'json': 'JSON',
     'markdown': 'MARKDOWN'
 }
 
+# These work on arbitrary expressions.
 builtins = {
     'assert': 'ASSERT',
-    'assume': 'ASSUME',
     'print': 'PRINT',
-    'exit': 'EXIT',
-    'stdout': 'STDOUT',
-    'stderr': 'STDERR',
-    'successful': 'SUCCESSFUL',
-    'failure': 'FAILURE',
-    'run': 'RUN',
-    'require': 'REQUIRE'
 }
 
+# Supported control blocks.
 blocks = {
     'setup': 'SETUP',
     'question': 'QUESTION',
@@ -32,21 +28,35 @@ blocks = {
     'output': 'OUTPUT',
 }
 
+# Statement constructs.
 stmts = {
     'let': 'LET',
-    'award': 'AWARD',
-    'in': 'IN',
     'be': 'BE',
+    'award': 'AWARD',
     'touch': 'TOUCH',
-    'remove': "REMOVE"
+    'remove': 'REMOVE',
+    'run': 'RUN',
+    'require': 'REQUIRE'
 }
 
+# Assorted keywords.
+keywords = {
+    'in': 'IN',
+    'exit': 'EXIT',
+    'stdout': 'STDOUT',
+    'stderr': 'STDERR',
+    'successful': 'SUCCESSFUL',
+    'failure': 'FAILURE',
+}
+
+# Logical operators.
 logical = {
     'not': 'NOT',
     'and': 'AND',
     'or': 'OR',
 }
 
+# Here, we build the full dictionary of reserved words.
 reserved = {
     **types,
     **builtins,
@@ -54,6 +64,7 @@ reserved = {
     **stmts,
     **outputs,
     **logical,
+    **keywords
 }
 
 literals = ['=', '>', '<', '(', ')', ',', '{', '}', ';']
@@ -63,8 +74,6 @@ tokens = [
     'PLUS', 'MINUS', 'TIMES', 'DIVIDE',
     # Equality
     'EQ', 'LE', 'GE', 'LT', 'GT',
-    # Logical
-    # 'AND', 'OR', 'NOT',
     # Primitives
     'STRING', 'FLOAT', 'INTEGER',
     # Other

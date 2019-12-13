@@ -8,7 +8,7 @@ from multiprocessing.pool import Pool
 
 from gradelang.question import Question
 from . import lexer, parser
-from .state import state
+from .state import state, NIL
 from .walk import walk
 
 
@@ -28,7 +28,7 @@ def interpret(stream) -> None:
     # Generate Output.
     if 'json' in state.output:
         f = state.output['json']
-        if f != ('nil',):
+        if f != NIL:
             with open(f, 'w') as fp:
                 fp.write(state.json())
         else:
@@ -36,13 +36,13 @@ def interpret(stream) -> None:
 
     if 'markdown' in state.output:
         f = state.output['markdown']
-        if f != ('nil',):
+        if f != NIL:
             with open(f, 'w') as fp:
                 fp.write(state.markdown())
         else:
             print(state.markdown())
 
-    if ('nil',) in state.output:
+    if NIL in state.output:
         print(state.report())
     return
 
@@ -59,13 +59,9 @@ def worker(question: Question, setup: tuple, teardown: tuple) -> Question:
     output = io.StringIO()
     with redirect_stdout(output):
         try:
-            if setup:
-                walk(setup)
-
+            walk(setup)
             walk(question.body)
-
-            if teardown:
-                walk(teardown)
+            walk(teardown)
         except Exception as err:
             question.exception = repr(err)
             question.traceback = traceback.format_exc()

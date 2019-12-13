@@ -5,13 +5,15 @@ from typing import List
 
 from gradelang.question import Question
 
+NIL = ('nil',)
+
 
 class State:
     symbol_table: dict
     setup: tuple
     _questions: List[Question]
     teardown: tuple
-    output: list
+    output: dict
 
     question: Question
 
@@ -24,10 +26,10 @@ class State:
 
     def clean(self):
         self.reset()
-        self.setup = tuple()
+        self.setup = NIL
         self._questions = list()
-        self.teardown = tuple()
-        self.output = list()
+        self.teardown = NIL
+        self.output = {NIL: ''}
         return
 
     @property
@@ -37,7 +39,7 @@ class State:
     def add_question(self, name, body):
         self._questions.append(
             Question(
-                name=name if name != ('nil',) else len(self._questions),
+                name=name if name != NIL else len(self._questions),
                 body=body,
             )
         )
