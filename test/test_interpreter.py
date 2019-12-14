@@ -4,7 +4,7 @@ import unittest
 from tempfile import TemporaryDirectory
 
 from gradelang.interpreter import *
-from .samples import *
+from test.samples import *
 
 
 class TestSetup(unittest.TestCase):
@@ -87,6 +87,17 @@ class TestQuestion(unittest.TestCase):
     def test_award_points(self):
         interpret(Question.awarding_points)
         self.assertEqual(10, state.score())
+        return
+
+    def test_logical_operators(self):
+        interpret("""
+        question {
+            assert 0 or 1;
+            assert 1 and 1;
+            assert not 0;
+        }
+        """)
+        self.assertEqual([], [q.exception for q in state.questions if q.exception])
         return
 
 
