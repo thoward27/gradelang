@@ -29,7 +29,9 @@ def let(ast):
         warnings.simplefilter('ignore')
 
         if ast[2] == 'String':
-            new_string = characters(*params) if params else characters()
+            # TODO: Remove whitelist argument and work it into examples.
+            new_string = characters(*params, whitelist_categories=['L', 'N']) if params else characters(
+                whitelist_categories=['L', 'N'])
             elem = {ast[1]: new_string.example()}
         elif ast[2] == 'Int':
             new_int = integers(*params) if params else integers()
