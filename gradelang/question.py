@@ -15,6 +15,11 @@ class Question:
         self._workdir = None
         return
 
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        return
+
     def __eq__(self, other: 'Question') -> bool:
         return all((self.name == other.name, self.body == other.body))
 
@@ -24,7 +29,7 @@ class Question:
     def __repr__(self) -> str:
         return f'{self.name}: [{self.body}]'
 
-    @cached_property
+    @cached_property  # TODO: Migrate away from cached_property
     def workdir(self):
         return TemporaryDirectory(prefix=f'{self.name}-')
 

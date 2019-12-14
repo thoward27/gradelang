@@ -118,7 +118,7 @@ def p_stmt_list(p):
 
 def p_stmt(p):
     """
-    stmt : LET ID BE type opt_param_list
+    stmt : LET ID BE type '(' param_list ')'
          | String ID '=' STRING
          | Int ID '=' INTEGER
          | Float ID '=' FLOAT
@@ -130,7 +130,7 @@ def p_stmt(p):
          | builtin exp
     """
     if p[1] == 'let':
-        p[0] = ('let', p[2], p[4], p[5])
+        p[0] = ('let', p[2], p[4], p[6])
 
     elif p[1] == 'award':
         p[0] = ('award', p[2])
@@ -178,24 +178,16 @@ def p_string_list(p):
     return
 
 
-def p_opt_param_list(p):
-    """
-    opt_param_list : '(' param_list ')'
-                   | '(' ')'
-    """
-    if len(p) > 3:
-        p[0] = p[2]
-
-
 def p_param_list(p):
     """
     param_list : param ',' param_list
                | param
+               | empty
     """
     if len(p) == 4:
-        p[0] = ("paramlist", p[1], p[3])
+        p[0] = (p[1], *p[3])
     else:
-        p[0] = p[1]
+        p[0] = (p[1],)
 
 
 def p_param(p):

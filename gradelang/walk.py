@@ -22,17 +22,6 @@ def assign(ast):
     state.symbol_table.update(elem)
 
 
-def run(ast):
-    if ast[1][0] != "paramlist":
-        state.question.results = Run(__safe_path(str(walk(ast[1]))), shell=True)()
-    else:
-        params = get_walked_params_as_list(ast[1])
-
-        params = [__safe_path(str(i)) for i in params]
-
-        state.question.results = Run(params)()
-
-
 def let(ast):
     # ('let', ID, type, param_list)
     params = [walk(p) for p in ast[3] if p != NIL]

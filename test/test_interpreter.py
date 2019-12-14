@@ -221,3 +221,12 @@ class TestProgram(unittest.TestCase):
     def test_output_json(self):
         interpret(Program.output_json)
         return
+
+    def test_shell_true(self):
+        interpret("""
+        question {
+            run "cat requirements.txt | grep grade";
+            assert exit successful;
+            assert "python" in stdout;
+        }
+        """)

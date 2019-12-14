@@ -182,7 +182,7 @@ class Program:
         }
 
         question 3 {
-            let x be Float(minvalue=1);
+            let x be Float(minvalue=1.0);
             run "echo", x;
 
             # If we want to just look at stdout.
