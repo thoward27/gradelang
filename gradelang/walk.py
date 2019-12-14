@@ -93,7 +93,7 @@ dispatch = {
     'and': lambda ast: int(bool(walk(ast[1])) and bool(walk(ast[2]))),
     'or': lambda ast: int(bool(walk(ast[1])) or bool(walk(ast[2]))),
 
-    # (NIL, )
+   # (NIL, )
     'nil': lambda ast: '',
 
     # (NOT IN, exp, stream)
