@@ -100,27 +100,6 @@ def __safe_path(p: str):
     return p.replace('@/', state.question.workdir.name)
 
 
-# TODO: Migrate these to grade.
-class AssertInStdout:
-    def __init__(self, string: str):
-        self.string = string
-
-    def __call__(self, results):
-        if self.string not in results.stdout:
-            raise AssertionError(f'{self.string} not in {results.stdout}')
-        return results
-
-
-class AssertInStderr:
-    def __init__(self, string: str):
-        self.string = string
-
-    def __call__(self, results):
-        if self.string not in results.stderr:
-            raise AssertionError(f'{self.string} not in {results.stderr}')
-        return results
-
-
 dispatch = {
     # (SEQ, stmt, stmt_list)
     'seq': lambda ast: (walk(ast[1]), walk(ast[2])),
@@ -150,8 +129,8 @@ dispatch = {
 
     # (IN, exp, stream)
     'in': lambda ast: (
-        AssertInStdout if ast[2] == 'stdout' else AssertInStderr
-    )(string=str(walk(ast[1])))(state.question.results),
+        AssertStdoutContains if ast[2] == 'stdout' else AssertStderrContains
+    )(strings=[str(walk(ast[1]))])(state.question.results),
 
     # ("not in", exp, stream)
     # ^((?!badword).)*$

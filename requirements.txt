@@ -3,7 +3,7 @@ backcall==0.1.0
 Click==7.0
 colorama==0.4.1
 decorator==4.4.1
-grade==1.1.2
+grade==2.0.1
 hypothesis==4.44.2
 ipython==7.10.0
 ipython-genutils==0.2.0
