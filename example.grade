@@ -1,0 +1,25 @@
+setup {
+
+}
+
+teardown {
+
+}
+
+output {
+
+}
+
+question {
+    run "echo", "hello world";
+
+    assert exit successful;
+    award 1;
+
+    assert "hello" in stdout;
+    assert "hello" not in stderr;
+    award 1;
+
+    assert "world" in stdout;
+    award 1;
+}

@@ -77,3 +77,17 @@ question "Meaning of life" {
     award 10;
 }
 ```
+
+## Setup
+
+To get started you can install gradelang directly from PyPI.
+
+```
+python -m pip install gradelang
+```
+
+Once `gradelang` is installed, it can be called directly as a module:
+
+```
+python -m gradelang <file.grade>
+```
