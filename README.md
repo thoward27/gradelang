@@ -1,4 +1,5 @@
 # gradelang
+
 A DMS for autograding.
 
 ## Example
@@ -91,3 +92,7 @@ Once `gradelang` is installed, it can be called directly as a module:
 ```
 python -m gradelang <file.grade>
 ```
+
+## Key Contributors
+
+Thanks to the efforts of Mary Wishart and Brittany Lewis, for help getting this project off of the ground and shipping v1.
