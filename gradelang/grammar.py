@@ -21,34 +21,50 @@ def p_grammar(_):
                | empty
 
     block : SETUP '{' stmt_list '}'
-          | QUESTION name '{' stmt_list '}'
+          | QUESTION opt_name '{' stmt_list '}'
           | TEARDOWN '{' stmt_list '}'
           | OUTPUT '{' format_list '}'
+
+    opt_name : INTEGER | STRING | empty
 
     format_list : output_format ';' format_list
                 | empty
 
-    name : STRING | INTEGER
+    output_format : JSON opt_string
+                 | MARKDOWN opt_string
 
-    output_format : JSON | MARKDOWN
+    opt_string : STRING | empty
 
     stmt_list : stmt ';' stmt_list
               | empty
 
-    stmt : FOR ID IN type
-         | type ID '=' exp
+    stmt : LET ID be type '(' param_list ')'
+         | String ID '=' STRING
+         | Int ID '=' INTEGER
+         | Float ID '=' FLOAT
          | builtin exp
          | AWARD INTEGER
-         | RUN STRING
+         | RUN param_list
          | TOUCH STRING
          | REMOVE STRING
+         | REQUIRE STRING string_list
 
-    type : STRING_TYPE
-         | PROGRAM_TYPE
+    string_list : ',' STRING string_list
+                | empty
+
+    param_list : param ',' param_list
+               | param
+               | empty
+
+    param : exp
+          | param_assign
+
+    param_assign : ID '=' exp
 
     builtin : ASSERT
-            | ASSUME
             | PRINT
+
+    type : String | Int | Float
 
     exp : exp PLUS exp
         | exp MINUS exp
@@ -61,17 +77,17 @@ def p_grammar(_):
         | exp GT exp
         | exp AND exp
         | exp OR exp
-        | EXIT SUCCESSFUL
-        | EXIT FAILURE
-        | STRING IN STDOUT
-        | STRING IN STDERR
+        | EXIT exit_status
+        | exp IN STDOUT
+        | exp IN STDERR
+        | exp NOT IN STDOUT
+        | exp NOT IN STDERR
         | INTEGER
         | ID
         | STRING
         | '(' exp ')'
         | MINUS exp %prec UMINUS
         | NOT exp
-        | ID '(' argument_list ')'
     """
     pass
 
