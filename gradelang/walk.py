@@ -51,7 +51,7 @@ def __assert(cond: any, message: str = None):
     return
 
 
-def __thread_path(p: str):
+def __thread_path(p):
     return str(p).replace('@/', state.question.workdir.name)
 
 
@@ -93,14 +93,14 @@ dispatch = {
     'and': lambda ast: int(bool(walk(ast[1])) and bool(walk(ast[2]))),
     'or': lambda ast: int(bool(walk(ast[1])) or bool(walk(ast[2]))),
 
-   # (NIL, )
+    # (NIL, )
     'nil': lambda ast: '',
 
     # (NOT IN, exp, stream)
     # ^((?!badword).)*$
-    'notin': lambda ast: (  # TODO: Not(AssertStoutContains()) once grade==2.1.0
-        AssertRegexStdout if ast[2] == 'stdout' else AssertRegexStderr
-    )(pattern="^((?!" + str(walk(ast[1])) + ").)*$")(state.question.results),
+    'notin': lambda ast: Not(
+        (AssertStderrContains if ast[2] == 'stdout' else AssertStderrContains)(strings=[ast[1]])
+    )(state.question.results),
 
     # (OPERATOR, exp, exp)
     '+': lambda ast: int(walk(ast[1])) + int(walk(ast[2])),
@@ -145,7 +145,7 @@ dispatch = {
 }
 
 
-def walk(ast) -> str:
+def walk(ast) -> any:
     action = ast[0]
     if action in dispatch:
         return dispatch[action](ast)
