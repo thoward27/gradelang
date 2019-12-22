@@ -126,7 +126,6 @@ def t_STRING(t):
 def t_NEWLINE(t):
     r"""\n"""
     t.lexer.lineno += len(t.value)
-    pass
 
 
 def t_error(t):
