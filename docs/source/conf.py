@@ -13,6 +13,8 @@
 import os
 import sys
 
+from pkg_resources import get_distribution, DistributionNotFound
+
 sys.path.insert(0, os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
@@ -22,7 +24,11 @@ copyright = '2019, Tom Howard'
 author = 'Tom Howard'
 
 # The full version, including alpha/beta/rc tags
-release = '0.9'
+try:
+    release = get_distribution('grade').version
+    version = '.'.join(release.split('.')[:2])
+except DistributionNotFound:
+    pass
 
 # -- General configuration ---------------------------------------------------
 
