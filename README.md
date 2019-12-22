@@ -6,7 +6,7 @@ A DMS for autograding.
 [![Read the Docs](https://img.shields.io/readthedocs/gradelang)](https://gradelang.readthedocs.io/en/latest)
 [![AGPL License](https://img.shields.io/github/license/thoward27/gradelang)](https://github.com/thoward27/gradelang/blob/master/LICENSE)
 [![Codecov](https://img.shields.io/codecov/c/github/thoward27/gradelang)](https://codecov.io/gh/thoward27/gradelang)
-
+[![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/thoward27/gradelang)](https://lgtm.com/projects/g/thoward27/gradelang/context:python)
 
 
 ## Example
