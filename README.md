@@ -1,4 +1,4 @@
-# gradelang
+# Gradelang
 
 A DMS for autograding.
 
