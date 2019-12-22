@@ -1,4 +1,4 @@
-""" gradelang Lexer.
+""" Gradelang Lexer.
 """
 
 # Builtin types, all supporting automated generation.

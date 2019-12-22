@@ -1,4 +1,4 @@
-""" gradelang Tree Walker.
+""" Tree Walker.
 """
 import os
 import warnings

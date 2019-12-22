@@ -1,4 +1,4 @@
-""" gradelang Interpreter.
+""" Gradelang Interpreter.
 """
 import io
 import traceback

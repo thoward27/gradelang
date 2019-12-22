@@ -1,4 +1,4 @@
-""" gradelang State.
+""" State manager.
 """
 import json
 from typing import List

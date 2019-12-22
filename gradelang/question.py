@@ -1,3 +1,5 @@
+""" Question Manager.
+"""
 from tempfile import TemporaryDirectory
 from typing import Union
 
