@@ -7,6 +7,7 @@ from pathlib import Path
 from grade.pipeline import *
 from hypothesis.strategies import characters, floats, integers
 
+from .fns import *
 from .state import state, NIL
 
 
@@ -18,29 +19,6 @@ def assign(ast):
         elem = {ast[2]: int(ast[3])}
     elif ast[1] == "Float":
         elem = {ast[2]: float(ast[3])}
-
-    state.symbol_table.update(elem)
-
-
-def let(ast):
-    # ('let', ID, type, param_list)
-    params = [walk(p) for p in ast[3] if p != NIL]
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore')
-
-        if ast[2] == 'String':
-            # TODO: Remove whitelist argument and work it into examples.
-            new_string = characters(*params, whitelist_categories=['L', 'N']) if params else characters(
-                whitelist_categories=['L', 'N'])
-            elem = {ast[1]: new_string.example()}
-        elif ast[2] == 'Int':
-            new_int = integers(*params) if params else integers()
-            elem = {ast[1]: new_int.example()}
-        elif ast[2] == "Float":
-            new_float = floats(*params) if params else floats()
-            elem = {ast[1]: new_float.example()}
-        else:
-            raise TypeError(f'Invalid type in let: {ast[2]}')
 
     state.symbol_table.update(elem)
 
