@@ -14,10 +14,14 @@ outputs = {
     'markdown': 'MARKDOWN'
 }
 
-# These work on arbitrary expressions.
+# Builtin functions.
 builtins = {
     'assert': 'ASSERT',
+    'check': 'CHECK',
     'print': 'PRINT',
+    'award': 'AWARD',
+    'run': 'RUN',
+    'require': 'REQUIRE',
 }
 
 # Supported control blocks.
@@ -28,25 +32,13 @@ blocks = {
     'output': 'OUTPUT',
 }
 
-# Statement constructs.
-stmts = {
-    'let': 'LET',
-    'be': 'BE',
-    'award': 'AWARD',
-    'touch': 'TOUCH',
-    'remove': 'REMOVE',
-    'run': 'RUN',
-    'require': 'REQUIRE'
-}
-
 # Assorted keywords.
 keywords = {
     'in': 'IN',
     'exit': 'EXIT',
     'stdout': 'STDOUT',
     'stderr': 'STDERR',
-    'successful': 'SUCCESSFUL',
-    'failure': 'FAILURE',
+    'given': 'GIVEN',
 }
 
 # Logical operators.
@@ -61,7 +53,6 @@ reserved = {
     **types,
     **builtins,
     **blocks,
-    **stmts,
     **outputs,
     **logical,
     **keywords
@@ -77,7 +68,7 @@ tokens = [
     # Primitives
     'STRING', 'FLOAT', 'INTEGER',
     # Other
-    'ID',
+    'NAME',
     *list(reserved.values())
 ]
 
@@ -104,7 +95,7 @@ def t_INTEGER(t):
     return t
 
 
-def t_ID(t):
+def t_NAME(t):
     r"""[a-zA-Z_][a-zA-Z_0-9]*"""
     # Check for reserved words
     t.type = reserved.get(t.value, 'ID')
@@ -115,12 +106,6 @@ def t_STRING(t):
     r"""(\"[^"]*\")|(\'[^']*\')"""
     t.value = t.value[1:-1]  # strip the quotes
     return t
-
-
-# def t_PARAM_ASSIGN(t):
-#    r"""[a-zA-Z_]+\=[a-zA-Z_0-9]+"""
-#    #t.type = reserved.get(t.value, "PARAM_ASSIGN")
-#    return t
 
 
 def t_NEWLINE(t):
