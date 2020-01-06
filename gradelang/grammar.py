@@ -2,79 +2,99 @@
 
 .. code-block:: none
 
-    prog : block_list
+    prog :
+        blocks
+        | empty
 
-    block_list : block block_list
-               | empty
+    blocks : 
+        block blocks
+        | empty
 
-    block : SETUP '{' stmt_list '}'
-          | QUESTION opt_name '{' stmt_list '}'
-          | TEARDOWN '{' stmt_list '}'
-          | OUTPUT '{' format_list '}'
+    block : 
+        SETUP '{' statements '}'
+        | QUESTION opt_name opt_given '{' statements '}'
+        | TEARDOWN '{' statements '}'
+        | OUTPUT '{' outputs '}'
 
-    opt_name : INTEGER | STRING | empty
+    statement :
+        type NAME '=' exp
+        | NAME '(' parameters ')'
+        | REQUIRE STRING strings
+        | RUN args 
+        | ASSERT exp
+        | CHECK exp
+        | PRINT exp
+        | AWARD exp 
 
-    format_list : output_format ';' format_list
-                | empty
+    given :
+        GIVEN question_parameters
+    
+    question_parameter: NAME '=' type '(' parameters ')'
 
-    output_format : JSON opt_string
-                 | MARKDOWN opt_string
+    output : 
+        JSON opt_string
+        | MARKDOWN opt_string
 
-    opt_string : STRING | empty
+    arg : exp
+    kwarg : NAME '=' exp
 
-    stmt_list : stmt ';' stmt_list
-              | empty
-
-    stmt : LET ID be type '(' param_list ')'
-         | String ID '=' STRING
-         | Int ID '=' INTEGER
-         | Float ID '=' FLOAT
-         | builtin exp
-         | AWARD INTEGER
-         | RUN param_list
-         | TOUCH STRING
-         | REMOVE STRING
-         | REQUIRE STRING string_list
-
-    string_list : ',' STRING string_list
-                | empty
-
-    param_list : param ',' param_list
-               | param
-               | empty
-
-    param : exp
-          | param_assign
-
-    param_assign : ID '=' exp
-
-    builtin : ASSERT
-            | PRINT
-
-    type : String | Int | Float
-
-    exp : exp PLUS exp
-        | exp MINUS exp
-        | exp TIMES exp
-        | exp DIVIDE exp
-        | exp EQ exp
-        | exp LE exp
-        | exp LT exp
-        | exp GE exp
-        | exp GT exp
+    exp : 
+        exp math_op exp
+        | exp comparator exp
         | exp AND exp
         | exp OR exp
-        | EXIT exit_status
-        | exp IN STDOUT
-        | exp IN STDERR
-        | exp NOT IN STDOUT
-        | exp NOT IN STDERR
-        | INTEGER
-        | ID
-        | STRING
-        | '(' exp ')'
-        | MINUS exp %prec UMINUS
         | NOT exp
+        | EXIT INTEGER 
+        | exp IN output 
+        | exp NOT IN output 
+        | INTEGER
+        | NAME
+        | STRING
+        | MINUS exp %prec UMINUS
+        | '(' exp ')'
+
+    math_op : PLUS | MINUS | TIMES | DIVIDE
+
+    comparator : EQ | LE | LT | GE | GT
+
+    output : STDOUT | STDERR
+    
+    type : String | Int | Float
+
+    statements : 
+        statement ';' statements
+        | empty
+
+    strings : 
+        STRING
+        | STRING ',' strings
+        | empty
+    
+    parameters :
+        args kwargs | empty
+
+    question_parameters : 
+        question_parameter
+        | question_parameter ',' question_paramaters
+        | empty
+
+    outputs : 
+        output ';' outputs 
+        | empty
+        
+    args:
+        arg
+        | arg ',' args
+        | empty
+
+    kwargs:
+        kwarg
+        | kwarg ',' kwargs
+        | empty
+  
+    opt_name : INTEGER | STRING | empty
+    opt_given : given | empty
+    opt_string : STRING | empty
 
 TODO Pull lexer tokens in?
 """
@@ -99,25 +119,26 @@ precedence = (
 #########################################################################
 def p_prog(_):
     """
-    prog : block_list
+    prog : blocks 
+        | empty
     """
-    return
+    pass
 
 
-def p_block_list(_):
+def p_blocks(_):
     """
-    block_list : block block_list
-               | empty
+    blocks : block blocks
+        | empty
     """
-    return
+    pass
 
 
 def p_block(p):
     """
-    block : SETUP '{' stmt_list '}'
-          | QUESTION opt_name '{' stmt_list '}'
-          | TEARDOWN '{' stmt_list '}'
-          | OUTPUT '{' format_list '}'
+    block : SETUP '{' statements '}'
+          | QUESTION opt_name '{' statements '}'
+          | TEARDOWN '{' statements '}'
+          | OUTPUT '{' outputs '}'
     """
     if p[1] == 'setup':
         state.setup = p[3]
@@ -133,259 +154,90 @@ def p_block(p):
 
     else:
         raise ValueError(f'Unexpected block: {p[1]}')
-    return
 
 
-def p_opt_name(p):
+def p_statement(p):
     """
-    opt_name : INTEGER
-         | STRING
-         | empty
+    statement : type NAME '=' exp
+        | NAME '(' parameters ')'
+        | REQUIRE STRING strings
+        | RUN args 
+        | ASSERT exp
+        | CHECK exp
+        | AWARD exp
     """
-    p[0] = p[1]
-    return
-
-
-def p_format_list(p):
-    """
-    format_list : output_format ';' format_list
-               | empty
-    """
-    if len(p) >= 3:
-        # If we have at least one format, filter out the empty tag,
-        # we do this, because presence of the empty tag will cause
-        # the output of the default report format, regardless of
-        # user-specified choices.
-        p[0] = {**p[1], **{fmt: file for fmt, file in p[3].items() if fmt != NIL}}
-    elif len(p) == 2:
-        p[0] = {p[1]: ''}
-    return
-
-
-def p_output_format(p):
-    """
-    output_format : JSON opt_string
-                  | MARKDOWN opt_string
-    """
-    p[0] = {p[1]: p[2]}
-    return
-
-
-def p_opt_string(p):
-    """
-    opt_string : STRING
-               | empty
-    """
-    p[0] = p[1]
-    return
-
-
-def p_stmt_list(p):
-    """
-    stmt_list : stmt ';' stmt_list
-              | empty
-    """
-    if len(p) == 4:
-        p[0] = ('seq', p[1], p[3])
-
-    elif len(p) == 2:
-        p[0] = p[1]
-    return
-
-
-def p_stmt(p):
-    """
-    stmt : LET ID BE type '(' param_list ')'
-         | String ID '=' STRING
-         | Int ID '=' INTEGER
-         | Float ID '=' FLOAT
-         | AWARD INTEGER
-         | RUN param_list
-         | REQUIRE STRING string_list
-         | TOUCH STRING
-         | REMOVE STRING
-         | builtin exp
-    """
-    if p[1] == 'let':
-        p[0] = ('let', p[2], p[4], p[6])
-
-    elif p[1] == 'award':
-        p[0] = ('award', p[2])
-
-    elif p[1] == 'require':
-        p[0] = ('require', p[2], p[3])
-
-    # elif p[1] in types.keys():
-    #    #print(TYPE_DICT)
-    #    dict = TYPE_DICT[p[1]]
-    #    state.symbol_table[p[2]] = dict
-    #    p[0] = ('assign', p[1], p[2], p[4])
-
-    elif p[1] in builtins.keys():
-        p[0] = (p[1], p[2])
-
-    elif p[1] == 'run':
-        p[0] = ('run', p[2])
-
-    elif p[1] == 'touch':
-        p[0] = ('touch', p[2])
-
-    elif p[1] == 'remove':
-        p[0] = ('remove', p[2])
-
-    elif p[3] == '=':
-        if p[1] == 'String' or p[1] == 'Int' or p[1] == 'Float':
+    if len(p) == 4 and p[3] == '=':
+        if p[1] in types.keys():
             p[0] = ('assign', p[1], p[2], p[4])
         else:
             raise ValueError(f'Unexpected type {p[1]}')
+
+    elif isinstance(p[1], tuple) and p[1][0] == 'name':
+        p[0] = ('call', p[1], p[3])
+    
+    elif p[1] == 'require':
+        p[0] = ('require', p[2], p[3])
+
+    elif p[1] in {'run', 'assert', 'check', 'award'}:
+        p[0] = (p[1], p[2])
+
     else:
         raise ValueError(f"Unexpected symbol {p[1]}")
-    return
 
 
-def p_string_list(p):
+def p_given(p):
     """
-    string_list : ',' STRING string_list
-                | empty
+    given : GIVEN question_parameters
     """
-    if len(p) == 4:
-        p[0] = (p[2], *p[3])
-    else:
-        p[0] = (p[1],)
-    return
+    p[0] = ('given', p[1])
 
 
-def p_param_list(p):
+def p_question_parameter(p):
     """
-    param_list : param ',' param_list
-               | param
-               | empty
+    question_parameter : NAME '=' type '(' parameters ')'
     """
-    if len(p) == 4:
-        p[0] = (p[1], *p[3])
-    else:
-        p[0] = (p[1],)
+    p[0] = (p[1], p[3], p[5])
 
 
-def p_param(p):
+def p_output(p):
     """
-    param : exp
-          | param_assign
+    output : JSON opt_string
+        | MARKDOWN opt_string
+    """
+    p[0] = {p[1]: p[2]}
 
+
+def p_arg(p):
+    """
+    arg : exp
     """
     p[0] = p[1]
 
 
-def p_param_assign(p):
+def p_kwarg(p):
     """
-    param_assign : ID '=' exp
+    kwarg : NAME '=' exp
     """
-    p[0] = ("paramassign", p[1], p[3])
+    p[0] = (p[1], p[3])
 
 
-def p_type(p):
-    """
-    type : String
-         | Int
-         | Float
-    """
-    p[0] = p[1]
-    return
-
-
-def p_builtin(p):
-    """
-    builtin : ASSERT
-            | PRINT
-    """
-    p[0] = p[1]
-    return
-
+###
+# Expressions
+###
 
 def p_binop_exp(p):
     """
-    exp : exp PLUS exp
-        | exp MINUS exp
-        | exp TIMES exp
-        | exp DIVIDE exp
-        | exp EQ exp
-        | exp LE exp
-        | exp LT exp
-        | exp GE exp
-        | exp GT exp
+    exp : exp math_op exp
+        | exp comparator exp
         | exp AND exp
         | exp OR exp
+        | exp IN output 
+        | exp NOT IN output 
     """
-    p[0] = (p[2], p[1], p[3])
-    return
-
-
-def p_bool_exp(p):
-    """
-    exp : EXIT exit_status
-        | exp IN STDOUT
-        | exp IN STDERR
-        | exp NOT IN STDOUT
-        | exp NOT IN STDERR
-    """
-    if p[1] == 'exit':
-        p[0] = ('exit', p[2])
-    elif p[2] == 'in':
-        p[0] = ('in', p[1], p[3])
-    elif p[3] == 'in':
+    if len(p) == 4:
+        p[0] = (p[2], p[1], p[3])
+    elif p[2:4] == ['not', 'in']:
         p[0] = ('notin', p[1], p[3])
-    return
-
-
-def p_exit_status(p):
-    """
-    exit_status : SUCCESSFUL
-                | FAILURE
-    """
-    # TODO: Include integers.
-    p[0] = p[1]
-    return
-
-
-def p_integer_exp(p):
-    """
-    exp : INTEGER
-    """
-    p[0] = ('integer', int(p[1]))
-    return
-
-
-def p_float_exp(p):
-    """
-    exp : FLOAT
-    """
-    p[0] = ('float', float(p[1]))
-    return
-
-
-def p_id_exp(p):
-    """
-    exp : ID
-    """
-    p[0] = ('id', p[1])
-    return
-
-
-def p_string_exp(p):
-    """
-    exp : STRING
-    """
-    p[0] = ('string', p[1])
-    return
-
-
-def p_paren_exp(p):
-    """
-    exp : '(' exp ')'
-    """
-    p[0] = ('paren', p[2])
-    return
-
 
 def p_uminus_exp(p):
     """
@@ -399,6 +251,193 @@ def p_not_exp(p):
     exp : NOT exp
     """
     p[0] = ('not', p[2])
+
+def p_unary_exp(p):
+    """
+    exp : EXIT INTEGER 
+        | NOT exp
+    """
+    p[0] = (p[1], p[2])
+
+def p_integer_exp(p):
+    """
+    exp : INTEGER
+    """
+    p[0] = ('integer', int(p[1]))
+
+
+def p_float_exp(p):
+    """
+    exp : FLOAT
+    """
+    p[0] = ('float', float(p[1]))
+
+
+def p_name_exp(p):
+    """
+    exp : NAME
+    """
+    p[0] = ('name', p[1])
+
+
+def p_string_exp(p):
+    """
+    exp : STRING
+    """
+    p[0] = ('string', p[1])
+
+
+def p_paren_exp(p):
+    """
+    exp : '(' exp ')'
+    """
+    p[0] = ('paren', p[2])
+
+
+def p_math_op(p):
+    """
+    math_op : PLUS
+        | MINUS
+        | TIMES
+        | DIVIDE
+    """
+    p[0] = p[1]
+
+
+def p_comparator(p):
+    """
+    comparator : EQ
+        | LE
+        | LT
+        | GE
+        | GT
+    """
+    p[0] = p[1]
+
+
+def p_output(p):
+    """
+    output : STDOUT
+        | STDERR
+    """
+    p[0] = p[1]
+
+
+def p_type(p):
+    """
+    type : String
+         | Int
+         | Float
+    """
+    p[0] = p[1]
+
+
+###
+# List of things.
+###
+
+def p_statements(p):
+    """
+    statements : statement ';' statements
+        | empty
+    """
+    if len(p) == 4:
+        p[0] = ('seq', p[1], p[3])
+
+    elif len(p) == 2:
+        p[0] = p[1]
+
+
+def p_strings(p):
+    """
+    strings : ',' STRING strings
+        | empty
+    """
+    if len(p) == 4:
+        p[0] = (p[2], *p[3])
+    else:
+        p[0] = (p[1],)
+
+
+def p_parameters(p):
+    """
+    parameters : param ',' parameters
+        | param
+        | empty
+    """
+    if len(p) == 4:
+        p[0] = (p[1], *p[3])
+    else:
+        p[0] = (p[1],)
+
+
+def p_question_parameters(p):
+    """
+    question_parameters : question_parameter
+        | question_parameter ',' question_parameters
+        | empty
+    """
+    # TODO
+    p[0] = p[1]
+
+
+def p_outputs(p):
+    """
+    outputs : output ';' outputs
+        | empty
+    """
+    if len(p) >= 3:
+        # If we have at least one format, filter out the empty tag,
+        # we do this, because presence of the empty tag will cause
+        # the output of the default report format, regardless of
+        # user-specified choices.
+        p[0] = {**p[1], **{fmt: file for fmt, file in p[3].items() if fmt != NIL}}
+    elif len(p) == 2:
+        p[0] = {p[1]: ''}
+
+
+def p_args(p):
+    """
+    args : arg
+        | arg ',' args
+        | empty
+    """
+    # TODO
+    p[0] = p[1]
+
+
+def p_kwargs(p):
+    """
+    kwargs : kwarg
+        | kwarg ',' kwargs
+        | empty
+    """
+    p[0] = p[1]
+
+
+def p_opt_name(p):
+    """
+    opt_name : INTEGER
+         | STRING
+         | empty
+    """
+    p[0] = p[1]
+
+
+def p_opt_given(p):
+    """
+    opt_given : given
+        | empty
+    """
+    p[0] = p[1]
+
+
+def p_opt_string(p):
+    """
+    opt_string : STRING
+               | empty
+    """
+    p[0] = p[1]
 
 
 def p_empty(p):
