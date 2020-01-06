@@ -23,7 +23,7 @@ def interpret(stream) -> None:
     # Execute Questions.
     _worker = partial(worker, setup=state.setup, teardown=state.teardown)
     with Pool() as p:
-        state._questions = p.map(_worker, state.questions)
+        state._questions = p.map(_worker, range(len(state.questions)))
 
     # Generate Output.
     if 'json' in state.output:
@@ -47,7 +47,7 @@ def interpret(stream) -> None:
     return
 
 
-def worker(question: Question, setup: tuple, teardown: tuple) -> Question:
+def worker(question: int, setup: tuple, teardown: tuple) -> Question:
     """ Worker Process for questions.
 
     Passing setup and teardown explicitly because Windows uses `spawn` instead
@@ -56,14 +56,15 @@ def worker(question: Question, setup: tuple, teardown: tuple) -> Question:
     within this function cannot impact the caller.
     """
     state.question = question
+    # TODO: BREAKPOINT here, is state thread-safe?
     output = io.StringIO()
     with redirect_stdout(output):
         try:
             walk(setup)
-            walk(question.body)
+            walk(state.questions[question].body)
             walk(teardown)
         except Exception as err:
-            question.exception = repr(err)
+            state[question].exception = repr(err)
             question.traceback = traceback.format_exc()
         finally:
             question.output = output.getvalue()
