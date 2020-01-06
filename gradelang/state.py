@@ -1,12 +1,16 @@
 """ State manager.
 """
 import json
+import threading
 from typing import List
+import warnings
+from functools import cached_property
 
 from gradelang.question import Question
 
 NIL = ('nil',)
 
+thread_storage = threading.local()
 
 class State:
     symbol_table: dict
@@ -15,22 +19,32 @@ class State:
     teardown: tuple
     output: dict
 
-    question: Question
-
     def __init__(self):
-        self.clean()
+        self.reset()
+
+    def __getitem__(self, index: int) -> Question:
+        return self._questions[index]
 
     def reset(self):
-        self.symbol_table = dict()
-        return
-
-    def clean(self):
+        self.symbol_table = {}
         self.reset()
         self.setup = NIL
         self._questions = list()
         self.teardown = NIL
         self.output = {NIL: ''}
-        return
+
+    def clean(self):
+        warnings.warn('State.clean() is being deprecated, use State.reset().') 
+        self.reset()
+        self.setup = NIL
+        self._questions = list()
+        self.teardown = NIL
+        self.output = {NIL: ''}
+
+    @cached_property
+    def question(self):
+        # TODO: Test
+        return getattr(thread_storage, 'question', None)
 
     @property
     def questions(self):
@@ -43,7 +57,6 @@ class State:
                 body=body,
             )
         )
-        return
 
     def score(self):
         return sum(q.score for q in self.questions)
