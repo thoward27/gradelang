@@ -11,7 +11,8 @@
         | empty
 
     block : 
-        SETUP '{' statements '}'
+        FIRST '{' statements '}'
+        | SETUP '{' statements '}'
         | QUESTION opt_name opt_given '{' statements '}'
         | TEARDOWN '{' statements '}'
         | OUTPUT '{' outputs '}'
@@ -43,6 +44,7 @@
         | exp comparator exp
         | exp AND exp
         | exp OR exp
+        | LAMBDA args: exp
         | NOT exp
         | EXIT INTEGER 
         | exp IN output 
