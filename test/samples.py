@@ -18,7 +18,7 @@ class Statements:
 
     award_0 = 'award 0;'
     award_1 = 'award 1;'
-    award_n = lambda n: f'award {n}'
+    award_n = lambda n: f'award {n};'
 
     check_success = 'check 1 == 1;'
     check_failure = 'check 1 == 0;'
