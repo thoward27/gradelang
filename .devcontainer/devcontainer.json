@@ -16,7 +16,7 @@
 	// "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
 
 	"settings": { 
-		"terminal.integrated.shell.linux": "/bin/bash",
+		"terminal.integrated.shell.linux": "/bin/zsh",
 		"python.pythonPath": "/usr/local/bin/python",
 		"python.linting.enabled": true,
 		"python.linting.pylintEnabled": true,
@@ -25,12 +25,18 @@
 
 	// Use 'appPort' to create a container with published ports. If the port isn't working, be sure
 	// your server accepts connections from all interfaces (0.0.0.0 or '*'), not just localhost.
-	// "appPort": [],
+	// "appPort": [5500],
 
 	// Uncomment the next line to run commands after the container is created - for example installing git.
 	// "postCreateCommand": "apt-get update && apt-get install -y git",
 
 	"extensions": [
-		"ms-python.python"
+		"ms-python.python", 
+		"formulahendry.code-runner", 
+		"eamodio.gitlens", 
+		"ritwickdey.liveserver",
+		"ms-vsliveshare.vsliveshare",
+		"visualstudioexptteam.vscodeintellicode",
+		"wakatime.csvode-wakatime"
 	]
 }
