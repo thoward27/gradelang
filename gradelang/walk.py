@@ -63,9 +63,6 @@ dispatch = {
         AssertStdoutContains if ast[2] == 'stdout' else AssertStderrContains
     )(strings=[str(walk(ast[1]))])(state.question.results),
 
-    # (LET, ID, type, opt_param_list)
-    'let': let,
-
     # (LOGICAL, exp)
     'not': lambda ast: int(not walk(ast[1])),
     'and': lambda ast: int(bool(walk(ast[1])) and bool(walk(ast[2]))),

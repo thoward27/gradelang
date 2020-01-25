@@ -2,6 +2,53 @@
 """
 
 
+class Statements:
+    """ Generic Statements.
+    """
+    assert_success = 'assert 1 == 1;'
+    assert_failure = 'assert 1 == 0;'
+    assert_exit_success = 'assert exit success;'
+    assert_exit_failure = 'assert exit failure;'
+    assert_exit_status5 = 'assert exit 5;'
+    assert_exit_statusn = lambda n: f'assert exit {n};'
+    assert_in_success = 'assert "A" in "ABC";'
+    assert_in_failure = 'assert "A" in "XYZ";'
+    assert_not_in_success = 'assert "A" not in "XYZ";'
+    assert_not_in_failure = 'assert "A" not in "ABC";'
+
+    award_0 = 'award 0;'
+    award_1 = 'award 1;'
+    award_n = lambda n: f'award {n};'
+
+    check_success = 'check 1 == 1;'
+    check_failure = 'check 1 == 0;'
+
+    declaration_int_success = 'Int x = 0;'
+    declaration_int_failure = 'Int x = "A";'
+    declaration_int_n = lambda n: f'Int x = {n};'
+    declaration_float_success = 'Float x = 0.0;'
+    declaration_float_failure = 'Float x = "A";'
+    declaration_float_n = lambda n: f'Float x = {n};'
+    declaration_str_success = 'String x = "Hello";'
+    declaration_str_failure = 'String x = 0;'
+    declaration_str_str = lambda s: f'String x = {s};'
+
+    lambda_int_identity = 'Int x = lambda n: n;'
+    lambda_int_add_1 = 'Int x: lambda n: n + 1;'
+    lambda_float_identity = 'Float x: lambda n: n;'
+    lambda_float_div_10 = 'Float x: lambda n: n / 10;'
+    lambda_str_identity = 'String x = lambda c: c;'
+    lambda_str_concat = 'String x = lambda s1, s2: s1 + s2;'
+    
+    require_success = 'require "./README.md";'
+    require_failure = 'require "Imaginary.files.are.not.real.files.;'
+    
+    run_success = 'run "echo";'
+    run_exception = 'run "python", "-c", "raise Exception";'
+    run_echo_hello = 'run "echo", "Hello world";'
+    run_cmd_not_found = 'run "notatool", "not an arg";'
+
+
 class Setup:
     """ Setup Snippets.
     """

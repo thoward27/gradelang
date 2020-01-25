@@ -1,0 +1,32 @@
+// For format details, see https://aka.ms/vscode-remote/devcontainer.json or the definition README at
+// https://github.com/microsoft/vscode-dev-containers/tree/master/containers/docker-existing-dockerfile
+{
+	"name": "Gradelang",
+	"context": "..",
+	"dockerFile": "./Dockerfile",
+
+	// Uncomment the next line if you will use a ptrace-based debugger like C++, Go, and Rust
+	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
+
+	"settings": { 
+		"terminal.integrated.shell.linux": "/bin/zsh",
+		"python.pythonPath": "/usr/local/bin/python",
+		"python.linting.enabled": true,
+		"python.linting.pylintEnabled": true,
+		"python.linting.pylintPath": "/usr/local/bin/pylint"
+	},
+
+	// Use 'appPort' to create a container with published ports. If the port isn't working, be sure
+	// your server accepts connections from all interfaces (0.0.0.0 or '*'), not just localhost.
+	"appPort": [5500],
+
+	"extensions": [
+		"ms-python.python", 
+		"formulahendry.code-runner", 
+		"eamodio.gitlens", 
+		"ritwickdey.liveserver",
+		"ms-vsliveshare.vsliveshare",
+		"visualstudioexptteam.vscodeintellicode",
+		"wakatime.csvode-wakatime"
+	]
+}
